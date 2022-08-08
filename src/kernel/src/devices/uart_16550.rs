@@ -4,6 +4,15 @@ use crate::syscall::io::PortIo;
 
 use crate::CharDevice;
 
+bitflags::bitflags! {
+    struct LineStatusFlags: u8 {
+        const INPUT_FULL = 1;
+        // Bits 1-4: unknown
+        const OUTPUT_FULL = 1 << 5;
+        // Bits 6-8: unknown
+    }
+}
+
 /// One allocated per serial port.
 #[repr(C, packed)]
 pub struct SerialPort<T: IoVec> {
@@ -44,20 +53,44 @@ impl SerialPort<MemMappedIo<u32>> {
     }
 }
 
-impl CharDevice for SerialPort<T> {
-    pub fn write(&mut self, buffer: &[u8]) {
-        for &byte in buffer {
-            self.send(byte)?;
-        }
-
-        Ok(())
+impl<T: Io> CharDevice for  SerialPort<T> where T::Value: From<u8> + TryInto<u8> {
+    /// Initialize the serial port so that it can start receiving data and writing it.
+    pub fn init(&mut self) {
+        self.int_enable.write(0x00.into());
+        self.line_control.write(0x80.into());
+        self.data.write(0x01.into());
+        self.int_enable.write(0x00.into());
+        self.line_control.write(0x03.into());
+        self.fifo_control.write(0xC7.into());
+        self.modem_contrl.write(0x0B.into());
+        self.int_enable.write(0x01.into());
     }
 
-    pub fn read(&but self, buffer: &[u8]) {
-        for byte in buffer.iter_mut() {
-            *byte = self.receive()?;
+    /// Retrieve the value of the line-status register.
+    fn line_status(&self) -> LineStatusFlags {
+        LineStatusFlags::from_bits_truncate(
+            (self.line_status.read() & 0xFF.into())
+                .try_into()
+                .unwrap_or(0)
+        )
+    }
+
+    /// Read a byte from the serial port.
+    pub fn read_char(self) -> u8 {
+        if self.line_status().contains(LineStatusFlags::INPUT_FULL) {
+            Some(
+                (self.data.read() & 0xFF.into())
+                    .try_into()
+                    .unwrap_or(0),
+            )
         }
 
-        Ok(())
+        None
+    }
+
+    /// Write a character to the port.
+    pub fn put_char(&mut self, byte: u8) {
+        while !self.line_status().contains(LineStatusFlags::OUTPUT_EMPTY) {}
+        self.data.write(byte.into());
     }
 }
