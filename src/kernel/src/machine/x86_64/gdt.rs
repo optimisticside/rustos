@@ -60,19 +60,19 @@ impl GdtEntry {
     }
 }
 
-/// Representation of the Task Segment Selector in long mode. Here it does not
-/// store info about the task and instead stores the Interrupt Stack Table.
+/// Representation of the Task Segment Selector in long mode. Here it does not store info about the
+/// task and instead stores the Interrupt Stack Table.
 #[repr(C, packed)]
 pub struct Tss {
     reserved: u32,
 
-    /// Stack pointers to load the stack when a privilage change occurs from a
-    /// from a lower one to a higher one.
+    /// Stack pointers to load the stack when a privilage change occurs from a from a lower one to
+    /// a higher one.
     pub rsp: [u64; 3],
     resreved2: u64,
 
-    /// Interrupt stack table. Contains stack pointers for when an entry in the
-    /// IDT has an IST value other than 0.
+    /// Interrupt stack table. Contains stack pointers for when an entry in the IDT has an IST
+    /// value other than 0.
     pub ist: [u64; 7],
     reserved3: u64,
     reserved4: u64,
