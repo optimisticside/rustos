@@ -1,6 +1,6 @@
-use crate::syscall::io::{IoVec, MemMappedIo, ReadOnly};
+use super::io::{IoVec, MemMappedIo, ReadOnly};
 #[cfg(target_arch = "x86_64")]
-use crate::syscall::io::PortIo;
+use super::io::PortIo;
 
 use crate::CharDevice;
 
@@ -32,7 +32,7 @@ pub struct SerialPort<T: IoVec> {
     modem_status: ReadOnly<T>,
 }
 
-#[cfg(target_arh = "x86_64")]
+#[cfg(target_arch = "x86_64")]
 impl SerialPort<PortIo<u8>> {
     pub const fn new(base: u16) -> Self {
         Self {
