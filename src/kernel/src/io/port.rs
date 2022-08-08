@@ -26,7 +26,7 @@ impl IoVec for PortIo<u8> {
 
     /// Reads a byte from the port.
     #[inline(always)]
-    fn read(&self) -> u8 {
+    pub fn read(&self) -> u8 {
         let value: u8;
         unsafe {
             asm!(
@@ -41,7 +41,7 @@ impl IoVec for PortIo<u8> {
 
     /// Write a byte to the port.
     #[inline(always)]
-    fn write(&self, value: u8) {
+    pub fn write(&self, value: u8) {
         unsafe {
             asm!(
                 "out dx, al",

@@ -1,13 +1,17 @@
 /// An I/O vector is a way to read and write data from and to a physical device. This can be
 /// implemented internally through a number of ways (including ports, memory-mappings,etc).
-pub struct IoVec {
-    type Value: Copy + PartialEq + BitAnd<Output = Value> + BitOr<Output = Value> + Not<Output = Value>;
+pub trait IoVec {
+    type Value: Copy
+        + PartialEq
+        + BitAnd<Output = Self::Value>
+        + BitOr<Output = Self::Value>
+        + Not<Output = Self::Value>,
 
     /// Read a piece of data from the physical device.
-    pub fn read(&self) -> Value;
+    fn read(&self) -> Value,
 
     /// Write a piece of data to the physical device.
-    pub fn write(&self, value: Value);
+    fn write(&self, value: Value),
 }
 
 /// Represents an I/O vector that can only be read from.
