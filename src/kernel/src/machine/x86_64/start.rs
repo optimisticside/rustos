@@ -1,3 +1,6 @@
+use crate::{idt, gdt};
+use super::super::devices::uart_16550::*;
+
 /// Passed to the kernel entry-point. Same format as the bootloader for Redux OS.
 #[repr(packed)]
 pub struct KernelArgs {
@@ -39,4 +42,11 @@ pub extern unsafe fn start(args_ptr: *const KernelArgs) -> ! {
     // Set up GDT and IDT before initializing paging.
     gdt::init();
     idt::init();
+
+    // Set up serial communication.
+    let mut serial_port = SerialPort::new(0x3F8);
+    let message_vec = "Hello world".as_bytes();
+    serial_port.write(message, &message_vec[..]);
+
+    unreachable!();
 }

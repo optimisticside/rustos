@@ -1,8 +1,8 @@
-use super::io::{IoVec, MemMappedIo, ReadOnly};
+use crate::io::{IoVec, MemMappedIo, ReadOnly};
 #[cfg(target_arch = "x86_64")]
-use super::io::PortIo;
+use crate::io::PortIo;
 
-use crate::CharDevice;
+use crate::devices::CharDevice;
 
 bitflags::bitflags! {
     struct LineStatusFlags: u8 {
@@ -48,12 +48,12 @@ impl SerialPort<PortIo<u8>> {
 }
 
 impl SerialPort<MemMappedIo<u32>> {
-    pub unsafe const fn new(ubase: usize) -> &'static mut Self {
+    pub const unsafe fn new(base: usize) -> &'static mut Self {
         &mut *(base as *mut Self)
     }
 }
 
-impl<T: Io> CharDevice for  SerialPort<T> where T::Value: From<u8> + TryInto<u8> {
+impl<T: IoVec> SerialPort<T> {
     /// Initialize the serial port so that it can start receiving data and writing it.
     pub fn init(&mut self) {
         self.int_enable.write(0x00.into());
@@ -74,9 +74,11 @@ impl<T: Io> CharDevice for  SerialPort<T> where T::Value: From<u8> + TryInto<u8>
                 .unwrap_or(0)
         )
     }
+}
 
+impl<T: IoVec> CharDevice for  SerialPort<T> where T::Value: From<u8> + TryInto<u8> {
     /// Read a byte from the serial port.
-    pub fn read_char(self) -> u8 {
+    pub fn read_char(&self) -> u8 {
         if self.line_status().contains(LineStatusFlags::INPUT_FULL) {
             Some(
                 (self.data.read() & 0xFF.into())
@@ -88,7 +90,8 @@ impl<T: Io> CharDevice for  SerialPort<T> where T::Value: From<u8> + TryInto<u8>
         None
     }
 
-    /// Write a character to the port.
+    /// Write a character to the port. Note that there is no abstraction over new-lines like there
+    /// is on UNIX, where you can substitute `\r\n` for `\n`.
     pub fn put_char(&mut self, byte: u8) {
         while !self.line_status().contains(LineStatusFlags::OUTPUT_EMPTY) {}
         self.data.write(byte.into());

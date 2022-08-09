@@ -1,9 +1,9 @@
 mod machine;
-mod filesys;
-mod drivers;
-mod process;
-mod socket;
-mod utils;
+//mod filesys;
+mod devices;
+//mod socket;
+//mod utils;
+mod io;
 
 use utils::bootstrap::Bootstrap;
 

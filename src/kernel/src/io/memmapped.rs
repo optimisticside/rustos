@@ -1,6 +1,8 @@
-use std::ptr::{read_volatile, write_volatle, addr_of};
-use std::mem::MaybeUninit
-use crate::io::Io;
+use core::ptr::{read_volatile, write_volatile, addr_of, addr_of_mut};
+use core::ops::{BitAnd, BitOr, Not};
+use core::mem::MaybeUninit;
+
+use crate::io::IoVec;
 
 /// Memory-mapped I/O is a way of performing I/O operations by reading and writing to pre-defined
 /// memory addresses that have been mapped to physical devices.
@@ -19,7 +21,7 @@ impl<T> MemMappedIo<T> {
 
     pub unsafe fn uninit() -> Self {
         Self {
-            value: MaybeUnint::uninit(),
+            value: MaybeUninit::uninit(),
         }
     }
 
@@ -30,11 +32,11 @@ impl<T> MemMappedIo<T> {
     }
 }
 
-impl<T> Io for MemMappedIo<T>
+impl<T> IoVec for MemMappedIo<T>
 where
     T: Copy + PartialEq + BitAnd<Output = T> + BitOr<Output = T> + Not<Output = T>
 {
-    type Value = T,
+    type Value = T;
 
     /// Reads the value at the address of the memory-mapped I/O.
     pub fn read(&self) -> T {

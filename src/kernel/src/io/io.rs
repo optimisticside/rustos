@@ -1,3 +1,6 @@
+use core::cmp::PartialEq;
+use core::ops::{BitAnd, BitOr, Not};
+
 /// An I/O vector is a way to read and write data from and to a physical device. This can be
 /// implemented internally through a number of ways (including ports, memory-mappings,etc).
 pub trait IoVec {

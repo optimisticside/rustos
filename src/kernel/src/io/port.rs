@@ -1,5 +1,7 @@
 use std::marker::PhantomData;
-use super::IoVec;
+use core::arch::asm;
+
+use crate::io::io::IoVec;
 
 /// Generic port I/O. This is when part of the CPU's address map is reserved for ports, which can
 /// be written and read from through special instructions (which in the case of x86 are `in` and
@@ -33,7 +35,7 @@ impl IoVec for PortIo<u8> {
                 "in al, dx",
                 in("dx") self.port,
                 out ("al") value,
-                options(nostack, nomem, preserve_flags)
+                options(nostack, nomem, preserves_flags)
             );
         }
         value

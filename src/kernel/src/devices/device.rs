@@ -3,8 +3,8 @@
 pub trait Device {
     /// Read the given number of bytes (through the buffer length) into the provided buffer, from
     /// the given location.
-    fn read(&self, position: usize, buffer: &[u8]),
+    fn read(&self, position: usize, buffer: &[u8]) -> Result<()>,
 
     /// Write the given buffer of points at the given location.
-    fn write(&mut self, position: usize, buffer: &[u8]),
+    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<()>,
 }

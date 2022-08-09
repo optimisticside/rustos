@@ -1,4 +1,4 @@
-use crate::device::Device;
+use crate::devices::Device;
 
 /// A character device is one that only read and write one character at a time.
 pub trait CharDevice {
@@ -11,7 +11,7 @@ pub trait CharDevice {
 
 impl<D: CharDevice> Device for D {
     /// Read the given number of bytes (based on the size of the buffer array).
-    pub fn read(&self, position: usize, buffer: &[u8]) {
+    fn read(&self, position: usize, buffer: &[u8]) {
         // We can ignore the position parameter, which is better than reading them just to skip
         // over them.
         for byte in buffer.iter_mut() {
@@ -20,7 +20,7 @@ impl<D: CharDevice> Device for D {
     }
 
     /// Write all the given bytes to the device.
-    pub fn write(&mut self, position: usize, buffer: &[u8]) {
+    fn write(&mut self, position: usize, buffer: &[u8]) {
         for &byte in buffer {
             self.put_char(byte)?;
         }
