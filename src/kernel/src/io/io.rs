@@ -11,10 +11,10 @@ pub trait IoVec {
         + Not<Output = Self::Value>,
 
     /// Read a piece of data from the physical device.
-    fn read(&self) -> Value,
+    fn read(&self) -> Self::Value,
 
     /// Write a piece of data to the physical device.
-    fn write(&self, value: Value),
+    fn write(&self, value: Self::Value),
 }
 
 /// Represents an I/O vector that can only be read from.

@@ -24,7 +24,7 @@ impl<T> PortIo<T> {
 
 /// Implementation for port I/O that involves bytes.
 impl IoVec for PortIo<u8> {
-    type Value = u8;
+    type Value: u8;
 
     /// Reads a byte from the port.
     #[inline(always)]
