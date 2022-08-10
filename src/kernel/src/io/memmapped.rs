@@ -45,6 +45,6 @@ where
 
     /// Writes to the address of the memory-mapped I/O.
     fn write(&mut self, value: T) {
-        unsafe { write_volatile(addr_of!(self.value).cast::<T>(), value) }
+        unsafe { write_volatile(addr_of_mut!(self.value).cast::<T>(), value) }
     }
 }

@@ -8,7 +8,7 @@ bitflags::bitflags! {
     struct LineStatusFlags: u8 {
         const INPUT_FULL = 1;
         // Bits 1-4: unknown
-        const OUTPUT_FULL = 1 << 5;
+        const OUTPUT_EMPTY = 1 << 5;
         // Bits 6-8: unknown
     }
 }
@@ -41,8 +41,8 @@ impl SerialPort<PortIo<u8>> {
             fifo_control: PortIo::new(base + 2),
             line_control: PortIo::new(base + 3),
             modem_control: PortIo::new(base + 4),
-            line_status: PortIo::new(base + 5),
-            modem_status: PortIo::new(base + 6),
+            line_status: ReadOnly::new(PortIo::new(base + 5)),
+            modem_status: ReadOnly::new(PortIo::new(base + 6)),
         }
     }
 }
@@ -92,7 +92,7 @@ impl<T: IoVec> CharDeviceSwitch for  SerialPort<T> where T::Value: From<u8> + Tr
 
     /// Write a character to the port. Note that there is no abstraction over new-lines like there
     /// is on UNIX, where you can substitute `\r\n` for `\n`.
-    fn put_char(&mut self, byte: u8) {
+    fn put_char(&mut self, byte: u8) -> Result<(), Error> {
         while !self.line_status().contains(LineStatusFlags::OUTPUT_EMPTY) {}
         self.data.write(byte.into());
         Ok(())
