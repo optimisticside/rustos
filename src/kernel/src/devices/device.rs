@@ -1,5 +1,5 @@
-/// Represents an error that was the result of an operation done on a device.
-pub type Error = dyn std::error::Error;
+/// Temporary error class for until I implement my own.
+pub type Error = std::io::Error;
 
 /// A device is an abstraction over a physical device's driver, which lets the caller read and
 /// write bytes to and from the device at any position they want.

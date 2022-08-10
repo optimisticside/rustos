@@ -12,11 +12,11 @@ pub trait CharDeviceSwitch {
 /// Wrapper for character devices so that they can be treated as generic devices (this works with
 /// both character and block devices).
 pub struct CharDevice {
-    /// Inner character device.
-    CharDeviceSwitch inner;
+    /// Inner character device switch.
+    CharDeviceSwitch inner,
 }
 
-impl CharDevice for Device {
+impl Device for CharDevice {
     /// Read the given number of bytes (based on the size of the buffer array).
     fn read(&self, position: usize, buffer: &[u8]) -> Result<(), Error> {
         // We can ignore the position parameter, which is better than reading them just to skip
@@ -38,7 +38,7 @@ impl CharDevice for Device {
     }
 }
 
-impl CharDevice for CharDeviceSwitch {
+impl CharDeviceSwitch for CharDevice {
     /// Wrapper for CharDeviceSwitch::get_char.
     fn get_char(&self) -> Result<u8, Error> {
         self.inner.get_char()

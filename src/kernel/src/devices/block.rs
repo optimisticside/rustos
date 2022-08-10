@@ -16,11 +16,11 @@ pub trait BlockDeviceSwitch {
 /// Wrapper for block devices so that they can be treated as generic devices (this works with
 /// both character and block devices).
 pub struct BlockDevice {
-    /// Inner character device.
-    BlockDeviceSwitch inner;
+    /// Inner block device switch.
+    BlockDeviceSwitch inner,
 }
 
-impl BlockDevice for Device {
+impl Device for BlockDevice {
     /// Read the given number of bytes (based on the size of the buffer array).
     fn read(&self, position: usize, buffer: &[u8]) -> Result<(), Error> {
         // We do not currently do any block caching, which we will need to impelement some time in the
@@ -34,7 +34,7 @@ impl BlockDevice for Device {
     }
 }
 
-impl BlockDevice for BlockDeviceSwitch {
+impl BlockDeviceSwitch for BlockDevice {
     /// Wrapper for BlockDeviceSwitch::read_block.
     fn read_block(&self, block_num: usize) -> Result<(), Error> {
         self.inner.read_block(block_num)
