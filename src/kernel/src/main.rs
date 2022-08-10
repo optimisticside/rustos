@@ -2,7 +2,7 @@ mod machine;
 //mod filesys;
 mod devices;
 //mod socket;
-//mod utils;
+mod utils;
 mod io;
 
 use utils::bootstrap::Bootstrap;

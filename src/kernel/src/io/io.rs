@@ -8,13 +8,13 @@ pub trait IoVec {
         + PartialEq
         + BitAnd<Output = Self::Value>
         + BitOr<Output = Self::Value>
-        + Not<Output = Self::Value>,
+        + Not<Output = Self::Value>;
 
     /// Read a piece of data from the physical device.
-    fn read(&self) -> Self::Value,
+    fn read(&self) -> Self::Value;
 
     /// Write a piece of data to the physical device.
-    fn write(&self, value: Self::Value),
+    fn write(&self, value: Self::Value);
 }
 
 /// Represents an I/O vector that can only be read from.

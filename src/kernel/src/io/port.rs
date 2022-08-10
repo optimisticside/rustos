@@ -24,11 +24,11 @@ impl<T> PortIo<T> {
 
 /// Implementation for port I/O that involves bytes.
 impl IoVec for PortIo<u8> {
-    type Value: u8;
+    type Value = u8;
 
     /// Reads a byte from the port.
     #[inline(always)]
-    pub fn read(&self) -> u8 {
+    fn read(&self) -> u8 {
         let value: u8;
         unsafe {
             asm!(
@@ -43,7 +43,7 @@ impl IoVec for PortIo<u8> {
 
     /// Write a byte to the port.
     #[inline(always)]
-    pub fn write(&self, value: u8) {
+    fn write(&mut self, value: u8) {
         unsafe {
             asm!(
                 "out dx, al",

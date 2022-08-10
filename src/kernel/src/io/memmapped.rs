@@ -39,12 +39,12 @@ where
     type Value = T;
 
     /// Reads the value at the address of the memory-mapped I/O.
-    pub fn read(&self) -> T {
+    fn read(&self) -> T {
         unsafe { read_volatile(addr_of!(self.value).cast::<T>()) }
     }
 
     /// Writes to the address of the memory-mapped I/O.
-    pub fn write(&mut self, value: T) {
+    fn write(&mut self, value: T) {
         unsafe { write_volatile(addr_of!(self.value).cast::<T>(), value) }
     }
 }
