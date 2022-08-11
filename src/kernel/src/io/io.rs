@@ -30,8 +30,29 @@ impl<I: IoVec> ReadOnly<I> {
         }
     }
 
+    /// Read from the physical device.
     #[inline(always)]
     pub fn read(&self) -> I::Value {
         self.inner.read()
+    }
+}
+
+/// Represents an I/O vector that can only be written to.
+pub struct WriteOnly<I> {
+    /// Internal I/O vector that is used to write to the physical device.
+    inner: I,
+}
+
+impl<I: IoVec> ReadOnly<I> {
+    pub const fn new(inner: I) -> Self {
+        Self {
+            inner
+        }
+    }
+
+    /// Write to the physical device.
+    #[inline(always)]
+    pub fn write(&mut self, value: I::Value) {
+        self.inner.write(value)
     }
 }
