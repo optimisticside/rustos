@@ -62,7 +62,7 @@ impl<T: IoVec> SerialPort<T> {
         self.int_enable.write(0x00.into());
         self.line_control.write(0x03.into());
         self.fifo_control.write(0xC7.into());
-        self.modem_contrl.write(0x0B.into());
+        self.modem_control.write(0x0B.into());
         self.int_enable.write(0x01.into());
     }
 

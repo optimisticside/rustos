@@ -1,5 +1,5 @@
-use crate::{idt, gdt};
-use super::super::devices::uart_16550::*;
+use self::{idt, gdt};
+use crate::devices::uart_16550::*;
 
 /// Passed to the kernel entry-point. Same format as the bootloader for Redux OS.
 #[repr(packed)]

@@ -43,7 +43,7 @@ pub struct WriteOnly<I> {
     inner: I,
 }
 
-impl<I: IoVec> ReadOnly<I> {
+impl<I: IoVec> WriteOnly<I> {
     pub const fn new(inner: I) -> Self {
         Self {
             inner

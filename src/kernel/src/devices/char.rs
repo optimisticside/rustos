@@ -13,7 +13,7 @@ pub trait CharDeviceSwitch {
 /// both character and block devices).
 pub struct CharDevice {
     /// Inner character device switch.
-    CharDeviceSwitch inner,
+    inner: dyn CharDeviceSwitch,
 }
 
 impl Device for CharDevice {
