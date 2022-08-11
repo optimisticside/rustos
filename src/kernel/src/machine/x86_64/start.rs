@@ -48,5 +48,5 @@ pub extern unsafe fn start(args_ptr: *const KernelArgs) -> ! {
     let message_vec = "Hello world".as_bytes();
     serial_port.write(message, &message_vec[..]);
 
-    unreachable!();
+    crate::kmain(1, bootstrap)
 }

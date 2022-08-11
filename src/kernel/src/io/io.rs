@@ -14,7 +14,7 @@ pub trait IoVec {
     fn read(&self) -> Self::Value;
 
     /// Write a piece of data to the physical device.
-    fn write(&self, value: Self::Value);
+    fn write(&mut self, value: Self::Value);
 }
 
 /// Represents an I/O vector that can only be read from.

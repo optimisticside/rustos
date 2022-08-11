@@ -9,6 +9,6 @@ use utils::bootstrap::Bootstrap;
 
 /// Architecture-independent kernel entry-point called by architecture-specific
 /// code.
-fn main(cpus: usize, bootstrap: Bootstrap) -> ! {
-    
+fn kmain(cpus: usize, bootstrap: Bootstrap) -> ! {
+    loop {}
 }
