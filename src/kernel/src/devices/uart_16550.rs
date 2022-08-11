@@ -80,11 +80,11 @@ impl<T: IoVec> CharDeviceSwitch for  SerialPort<T> where T::Value: From<u8> + Tr
     /// Read a byte from the serial port.
     fn get_char(&self) -> Result<u8, DeviceError> {
         if self.line_status().contains(LineStatusFlags::INPUT_FULL) {
-            Ok(
+            return Ok(
                 (self.data.read() & 0xFF.into())
                     .try_into()
-                    .unwrap_or(0)
-            )
+                    .unwrap_or(0),
+            );
         }
 
         // TODO: This should be an error here, but I have yet to implement devices::DeviceError.
