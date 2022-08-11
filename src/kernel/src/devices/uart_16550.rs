@@ -2,7 +2,7 @@ use crate::io::{IoVec, MemMappedIo, ReadOnly};
 #[cfg(target_arch = "x86_64")]
 use crate::io::PortIo;
 
-use crate::devices::{CharDeviceSwitch, Error};
+use crate::devices::{CharDeviceSwitch, DeviceError};
 
 bitflags::bitflags! {
     struct LineStatusFlags: u8 {
@@ -53,7 +53,7 @@ impl SerialPort<MemMappedIo<u32>> {
     }
 }
 
-impl<T: IoVec> SerialPort<T> {
+impl<T: IoVec> SerialPort<T> where T::Value: From<u8> + TryInto<u8> {
     /// Initialize the serial port so that it can start receiving data and writing it.
     pub fn init(&mut self) {
         self.int_enable.write(0x00.into());
@@ -78,21 +78,22 @@ impl<T: IoVec> SerialPort<T> {
 
 impl<T: IoVec> CharDeviceSwitch for  SerialPort<T> where T::Value: From<u8> + TryInto<u8> {
     /// Read a byte from the serial port.
-    fn get_char(&self) -> Result<u8, Error> {
+    fn get_char(&self) -> Result<u8, DeviceError> {
         if self.line_status().contains(LineStatusFlags::INPUT_FULL) {
-            Some(
+            Ok(
                 (self.data.read() & 0xFF.into())
                     .try_into()
-                    .unwrap_or(0),
+                    .unwrap_or(0)
             )
         }
 
-        None
+        // TODO: This should be an error here, but I have yet to implement devices::DeviceError.
+        Ok(0)
     }
 
     /// Write a character to the port. Note that there is no abstraction over new-lines like there
     /// is on UNIX, where you can substitute `\r\n` for `\n`.
-    fn put_char(&mut self, byte: u8) -> Result<(), Error> {
+    fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
         while !self.line_status().contains(LineStatusFlags::OUTPUT_EMPTY) {}
         self.data.write(byte.into());
         Ok(())

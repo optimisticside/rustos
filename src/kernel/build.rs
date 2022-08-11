@@ -25,7 +25,7 @@ fn visit_dirs(directory: &Path, callback: &mut dyn FnMut(&DirEntry)) -> std::io:
 }
 
 /// Retrieve a file's name from its path.
-fn name_from_path<'a>(path: &'a PathBuf) -> &'a str {
+fn name_from_path(path: &PathBuf) -> &'_ str {
     let os_name = path.file_name().expect("Unable to get file name");
     os_name.to_str().expect("Invalid encoding for file name")
 }

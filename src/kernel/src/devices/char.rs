@@ -1,12 +1,12 @@
-use crate::devices::{Device, Error};
+use crate::devices::{Device, DeviceError};
 
 /// A character device is one that only read and write one character at a time.
 pub trait CharDeviceSwitch {
     /// Write a single character to the device.
-    fn get_char(&self) -> Result<u8, Error>;
+    fn get_char(&self) -> Result<u8, DeviceError>;
 
     /// Read a single character from the device.
-    fn put_char(&mut self, byte: u8) -> Result<(), Error>;
+    fn put_char(&mut self, byte: u8) -> Result<(), DeviceError>;
 }
 
 /// Wrapper for character devices so that they can be treated as generic devices (this works with
@@ -18,7 +18,7 @@ pub struct CharDevice {
 
 impl Device for CharDevice {
     /// Read the given number of bytes (based on the size of the buffer array).
-    fn read(&self, position: usize, buffer: &[u8]) -> Result<(), Error> {
+    fn read(&self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
         // We can ignore the position parameter, which is better than reading them just to skip
         // over them.
         for byte in buffer.iter_mut() {
@@ -29,7 +29,7 @@ impl Device for CharDevice {
     }
 
     /// Write all the given bytes to the device.
-    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<(), Error> {
+    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
         for &byte in buffer {
             self.inner.put_char(byte)?;
         }
@@ -40,12 +40,12 @@ impl Device for CharDevice {
 
 impl CharDeviceSwitch for CharDevice {
     /// Wrapper for CharDeviceSwitch::get_char.
-    fn get_char(&self) -> Result<u8, Error> {
+    fn get_char(&self) -> Result<u8, DeviceError> {
         self.inner.get_char()
     }
 
     /// Wrapper for CharDeviceSwitch::put_char.
-    fn put_char(&mut self, byte: u8) -> Result<(), Error> {
+    fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
         self.inner.put_char(byte)
     }
 }
