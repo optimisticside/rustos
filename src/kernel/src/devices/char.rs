@@ -18,23 +18,23 @@ pub struct CharDevice {
 
 impl Device for CharDevice {
     /// Read the given number of bytes (based on the size of the buffer array).
-    fn read(&self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
+    fn read(&self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         // We can ignore the position parameter, which is better than reading them just to skip
         // over them.
         for byte in buffer.iter_mut() {
             *byte = self.inner.get_char()?;
         }
 
-        Ok(())
+        Ok(buffer.len())
     }
 
     /// Write all the given bytes to the device.
-    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
+    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         for &byte in buffer {
             self.inner.put_char(byte)?;
         }
 
-        Ok(())
+        Ok(buffer.len())
     }
 }
 

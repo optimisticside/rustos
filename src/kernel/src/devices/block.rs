@@ -22,15 +22,15 @@ pub struct BlockDevice {
 
 impl Device for BlockDevice {
     /// Read the given number of bytes (based on the size of the buffer array).
-    fn read(&self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
+    fn read(&self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         // We do not currently do any block caching, which we will need to impelement some time in the
         // future if we remotely care about performance.
-        Ok(())
+        Ok(buffer.len())
     }
 
     /// Write all the given bytes to the device.
-    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<(), DeviceError> {
-        Ok(())
+    fn write(&mut self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
+        Ok(buffer.len())
     }
 }
 
