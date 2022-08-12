@@ -42,12 +42,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             Some(extension) if extension.eq(&OsString::from("real")) => {
                 let file_name = name_from_path(&path);
                 // TODO: Finish this
-            },
+            }
 
             Some(extension) if extension.eq(&OsString::from("inc")) => {
                 let path_str = path.to_str().expect("Invalid encoding for file path");
                 include_files.push(path_str.to_string())
-            },
+            }
 
             _ => (),
         }
@@ -58,7 +58,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let path = entry.path();
 
         match path.extension() {
-            Some (extension) if extension.eq(&OsString::from("asm")) => {
+            Some(extension) if extension.eq(&OsString::from("asm")) => {
                 let file_name = name_from_path(&path);
                 let mut build = nasm_rs::Build::new();
 
@@ -66,18 +66,16 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .file(&path)
                     .flag("-felf64")
                     .target("x86_64-unknown-none");
-                
+
                 for include in &include_files {
                     build.include(include);
                 }
 
-                build
-                    .compile(file_name)
-                    .expect("Unable to compile");
+                build.compile(file_name).expect("Unable to compile");
 
                 // Link as a static library.
                 println!("cargo:rustc-link-lib=static={}", file_name);
-            },
+            }
 
             _ => (),
         }
