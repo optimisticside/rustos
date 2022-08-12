@@ -56,7 +56,7 @@ impl GdtEntry {
 
     fn set_limit(&mut self, limit: u32) {
         self.low_limit = limit as u16;
-        self.high_limit_flags = self.high_limit_flags & 0xF0 | ((limit >> 16) as u8) & 0x0F; 
+        self.high_limit_flags = self.high_limit_flags & 0xF0 | ((limit >> 16) as u8) & 0x0F;
     }
 }
 

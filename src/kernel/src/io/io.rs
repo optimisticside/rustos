@@ -25,9 +25,7 @@ pub struct ReadOnly<I> {
 
 impl<I: IoVec> ReadOnly<I> {
     pub const fn new(inner: I) -> Self {
-        Self {
-            inner
-        }
+        Self { inner }
     }
 
     /// Read from the physical device.
@@ -45,9 +43,7 @@ pub struct WriteOnly<I> {
 
 impl<I: IoVec> WriteOnly<I> {
     pub const fn new(inner: I) -> Self {
-        Self {
-            inner
-        }
+        Self { inner }
     }
 
     /// Write to the physical device.

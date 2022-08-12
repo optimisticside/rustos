@@ -1,5 +1,5 @@
 pub use self::start::*;
 
-mod start;
-mod idt;
 mod gdt;
+mod idt;
+mod start;

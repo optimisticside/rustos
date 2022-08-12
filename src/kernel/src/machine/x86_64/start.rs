@@ -1,4 +1,4 @@
-use self::{idt, gdt};
+use self::{gdt, idt};
 use crate::devices::uart_16550::*;
 
 /// Passed to the kernel entry-point. Same format as the bootloader for Redux OS.
@@ -36,7 +36,7 @@ pub struct KernelArgs {
 /// Kernel entry-point for x86_64. Everything that is architecture-specific must be initialized
 /// here, before calling architecutre-independent kernel code.
 #[no_mangle]
-pub unsafe extern fn start(args_ptr: *const KernelArgs) -> ! {
+pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
     let args = args_ptr.read();
 
     // Set up GDT and IDT before initializing paging.

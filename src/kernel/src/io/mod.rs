@@ -5,5 +5,5 @@ pub use self::memmapped::*;
 pub use self::port::*;
 
 mod io;
-mod port;
 mod memmapped;
+mod port;

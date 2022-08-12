@@ -1,6 +1,6 @@
-use core::ptr::{read_volatile, write_volatile, addr_of, addr_of_mut};
-use core::ops::{BitAnd, BitOr, Not};
 use core::mem::MaybeUninit;
+use core::ops::{BitAnd, BitOr, Not};
+use core::ptr::{addr_of, addr_of_mut, read_volatile, write_volatile};
 
 use crate::io::IoVec;
 
@@ -34,7 +34,7 @@ impl<T> MemMappedIo<T> {
 
 impl<T> IoVec for MemMappedIo<T>
 where
-    T: Copy + PartialEq + BitAnd<Output = T> + BitOr<Output = T> + Not<Output = T>
+    T: Copy + PartialEq + BitAnd<Output = T> + BitOr<Output = T> + Not<Output = T>,
 {
     type Value = T;
 
