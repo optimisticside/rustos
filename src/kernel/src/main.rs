@@ -1,3 +1,5 @@
+extern crate alloc;
+
 mod machine;
 //mod filesys;
 mod devices;

@@ -1,4 +1,4 @@
-use alloc::collections::VecQueue;
+use alloc::collections::vec_queue::VecQueue;
 use alloc::vec::Vec;
 
 /// Representation of an IPC message payload. Paylods can be of an arbritrary size, and are stored

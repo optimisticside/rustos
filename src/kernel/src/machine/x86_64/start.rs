@@ -1,4 +1,5 @@
 use crate::machine::{gdt, idt};
+use crate::devices::*;
 use crate::devices::uart_16550::*;
 use crate::io::PortIo;
 
@@ -48,7 +49,7 @@ pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
     // Set up serial communication.
     let mut serial_port = SerialPort::<PortIo<u8>>::new(0x3F8);
     for character in "Hello world".as_bytes().iter() {
-        serial_port.put_char(character);
+        serial_port.put_char(*character);
     }
 
     crate::kmain(1, bootstrap)
