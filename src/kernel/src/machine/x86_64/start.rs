@@ -1,5 +1,6 @@
-use self::{gdt, idt};
+use crate::machine::{gdt, idt};
 use crate::devices::uart_16550::*;
+use crate::io::PortIo;
 
 /// Passed to the kernel entry-point. Same format as the bootloader for Redux OS.
 #[repr(packed)]
@@ -33,6 +34,7 @@ pub struct KernelArgs {
     bootstrap_entry: u64,
 }
 
+
 /// Kernel entry-point for x86_64. Everything that is architecture-specific must be initialized
 /// here, before calling architecutre-independent kernel code.
 #[no_mangle]
@@ -44,9 +46,10 @@ pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
     idt::init();
 
     // Set up serial communication.
-    let mut serial_port = SerialPort::new(0x3F8);
-    let message_vec = "Hello world".as_bytes();
-    serial_port.write(message, &message_vec[..]);
+    let mut serial_port = SerialPort::<PortIo<u8>>::new(0x3F8);
+    for character in "Hello world".as_bytes().iter() {
+        serial_port.put_char(character);
+    }
 
     crate::kmain(1, bootstrap)
 }

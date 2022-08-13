@@ -8,4 +8,4 @@ mod char;
 mod device;
 mod error;
 
-mod uart_16550;
+pub mod uart_16550;

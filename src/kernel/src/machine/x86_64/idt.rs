@@ -42,8 +42,8 @@ pub(super) struct IdtEntry {
     /// Middle 2 bytes of the offset.
     middle_offset: u16,
 
-    /// Highest byte of the offset.
-    high_offset: u8,
+    /// Highest 3 bytes of the offset.
+    high_offset: u32,
 }
 
 impl IdtEntry {

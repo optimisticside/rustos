@@ -13,7 +13,7 @@ pub(super) struct GdtEntry {
     low_limit: u16,
 
     /// Lower part of the base.
-    low_base: u32,
+    low_base: u16,
 
     /// Third byte of lower part of the base.
     middle_base: u8,

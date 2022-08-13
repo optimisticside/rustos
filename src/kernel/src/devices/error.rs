@@ -6,7 +6,7 @@ use std::fmt;
 pub struct DeviceError;
 
 impl fmt::Display for DeviceError {
-    fn fmt(&self, formatter: &fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         // This will have to suffice for now.
         write!(formatter, "Unknown device error")
     }
