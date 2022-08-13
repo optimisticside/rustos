@@ -1,3 +1,25 @@
+bitflags::bitflags! {
+    struct IdtEntryFlags: u8 {
+        /// Must be set for the entry to be valid.
+        const PRESENT = 1 << 7;
+
+        /// Descriptor-priority-level flags. Determine what rings can access the interrupt through
+        /// the `int` instruction. They also give permission to all the rings below them.
+        const RING_0 = 1 << 6;
+        const RING_1 = 0 << 5;
+        const RING_2 = 2 << 5;
+        const RING_3 = 3 << 5;
+
+        /// This includes exceptions and any other interrupts that relate to the currently-running
+        /// code. When this happens, the address of the currently executing instruction is saved.
+        const INTERRUPT = 0xE;
+
+        /// This is when an interrupt unrelated to the currently-running code occurs. In this case,
+        /// the next instruction is saved.
+        const TRAP = 0xF;
+    }
+}
+
 /// One allocated per entry in the interrupt descriptor table.
 #[repr(C, packed)]
 pub(super) struct IdtEntry {
@@ -26,7 +48,7 @@ pub(super) struct IdtEntry {
 
 impl IdtEntry {
     fn set_flags(&mut self, flags: IdtEntryFlags) {
-        self.type_attributes = flags;
+        self.type_attributes = flags.bits;
     }
 
     /// Set the offset value of the IDT entry.
@@ -34,7 +56,7 @@ impl IdtEntry {
         self.selector = selector;
         self.low_offset = base as u16;
         self.middle_offset = (base >> 16) as u16;
-        self.high_offset = (base >> 32) as u16;
+        self.high_offset = (base >> 32) as u32;
     }
 
     /// Set the handler of the IDT entry.

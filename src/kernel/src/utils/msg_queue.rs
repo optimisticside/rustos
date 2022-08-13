@@ -9,7 +9,7 @@ pub struct Message {
     data: Vec<u8>,
 }
 
-impl IpcMessage {
+impl Message {
     pub fn new(data: Vec<u8>) -> Self {
         Self { data }
     }
@@ -34,7 +34,7 @@ impl MessageQueue {
             let message_len = message.data.len();
             assert!(buffer.len() >= message_len);
 
-            buffer[..message_length].copy_from_slize(message.data_as_slice());
+            buffer[..message_len].copy_from_slice(message.data_as_slice());
             message_len
         }
     }

@@ -51,7 +51,7 @@ impl GdtEntry {
     fn set_offset(&mut self, offset: u32) {
         self.low_base = offset as u16;
         self.middle_base = (offset >> 16) as u8;
-        self.high_Base = (offset >> 24) as u8;
+        self.high_base = (offset >> 24) as u8;
     }
 
     fn set_limit(&mut self, limit: u32) {
