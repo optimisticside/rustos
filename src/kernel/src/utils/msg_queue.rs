@@ -1,4 +1,4 @@
-use alloc::collections::vec_deque::VecQueue;
+use alloc::collections::vec_deque::VecDeque;
 use alloc::vec::Vec;
 
 /// Representation of an IPC message payload. Paylods can be of an arbritrary size, and are stored
@@ -18,7 +18,7 @@ impl Message {
 /// Stores a queue of messages. Allows writing and reading messages from and into provided buffers.
 pub struct MessageQueue {
     /// Queue of messages.
-    messages: VecQueue<Message>,
+    messages: VecDeque<Message>,
 }
 
 impl MessageQueue {
@@ -34,8 +34,10 @@ impl MessageQueue {
             let message_len = message.data.len();
             assert!(buffer.len() >= message_len);
 
-            buffer[..message_len].copy_from_slice(message.data_as_slice());
+            buffer[..message_len].copy_from_slice(message.data.as_slice());
             message_len
+        } else {
+            unreachable!("MessageQueue::read called with empty buffer");
         }
     }
 

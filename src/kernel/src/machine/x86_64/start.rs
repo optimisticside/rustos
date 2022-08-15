@@ -43,7 +43,7 @@ pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
     let args = args_ptr.read();
 
     // Set up GDT and IDT before initializing paging.
-    gdt::init();
+    // gdt::init();
     idt::init();
 
     // Set up serial communication.
@@ -52,5 +52,7 @@ pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
         serial_port.put_char(*character);
     }
 
-    crate::kmain(1, bootstrap)
+    // TODO: this is temporary.
+    loop {}
+    // crate::kmain(1, bootstrap)
 }
