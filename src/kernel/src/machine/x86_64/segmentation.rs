@@ -22,19 +22,19 @@ bitflags::bitflags! {
 
 impl SegmentSelector {
     /// Create a segment selector from its index and requestor privilege level.
-    const fn new(index: u16, rpl: Ring) -> Self {
+    pub const fn new(index: u16, rpl: Ring) -> Self {
         Self {
             bits: index << 3 | (rpl as u16),
         }
     }
 
     /// Return the segment selector's index in the GDT or LDT.
-    fn index(&self) -> u16 {
+    pub fn index(&self) -> u16 {
         self.bits >> 3
     }
 
     /// Create a segment selector from bits.
-    fn from_raw(bits: u16) -> Self {
+    pub fn from_raw(bits: u16) -> Self {
         Self { bits }
     }
 }

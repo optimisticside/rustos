@@ -41,6 +41,22 @@ impl<T> DescriptorTablePointer<T> {
     }
 }
 
+/// Load the segment selector into the selector field of the local descriptor table register
+/// (LDTR).
+#[inline(always)]
+pub unsafe fn store_ldtr(selector: SegmentSelector) {
+    asm!("lldt {0:x}", in(reg) selector.bits());
+}
+
+/// Return the segment selector from the local descriptor table register (LDTR).
+pub unsafe fn load_ldtr() -> SegmentSelector {
+    let selector: u16;
+    unsafe {
+        asm!("sldt {0}", out(reg) selector);
+    }
+    SegmentSelector::from_raw(selector)
+}
+
 /// Load the GDTR register with the specified descriptor table pointer.
 #[inline(always)]
 pub unsafe fn load_gdt<T>(gdt: &DescriptorTablePointer<T>) {

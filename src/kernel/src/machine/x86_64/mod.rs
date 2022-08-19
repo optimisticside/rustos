@@ -2,6 +2,8 @@ use core::arch::asm;
 
 pub use self::start::*;
 
+pub mod idt;
+pub mod gdt;
 pub mod apic;
 pub mod ctrlregs;
 pub mod dtables;
@@ -13,6 +15,7 @@ pub mod segmentation;
 //pub mod task;
 pub mod time;
 pub mod tlb;
+pub mod start;
 
 /// x86 Protection levels
 ///

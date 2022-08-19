@@ -47,7 +47,7 @@ static mut INIT_GDT: [GdtEntry; 4] = [
             | GdtAccessFlags::RING_0
             | GdtAccessFlags::SYSTEM
             | GdtAccessFlags::EXECUTABLE
-            | GdtAccessFlags::PRIVILEDGE,
+            | GdtAccessFlags::PRIVILEGE,
         GdtEntryFlags::LONG_MODE,
     ),
     // Kernel data
@@ -56,7 +56,7 @@ static mut INIT_GDT: [GdtEntry; 4] = [
             | GdtAccessFlags::RING_0
             | GdtAccessFlags::SYSTEM
             | GdtAccessFlags::EXECUTABLE
-            | GdtAccessFlags::PRIVILEDGE,
+            | GdtAccessFlags::PRIVILEGE,
         GdtEntryFlags::LONG_MODE,
     ),
     // Kernel TLS
@@ -65,7 +65,7 @@ static mut INIT_GDT: [GdtEntry; 4] = [
             | GdtAccessFlags::RING_0
             | GdtAccessFlags::SYSTEM
             | GdtAccessFlags::EXECUTABLE
-            | GdtAccessFlags::PRIVILEDGE,
+            | GdtAccessFlags::PRIVILEGE,
         GdtEntryFlags::LONG_MODE,
     ),
 ];
@@ -74,7 +74,7 @@ bitflags::bitflags! {
     struct GdtAccessFlags: u8 {
         const NULL = 0;
         /// Present bit. Must be set for every valid segment.
-        const PRESENT: u8 = 1 << 7;
+        const PRESENT = 1 << 7;
         /// Descriptor privilege level field. Contains the CPU privilege level of the segment.
         const RING_0 = 0 << 5;
         const RING_1 = 1 << 5;
@@ -104,7 +104,7 @@ impl GdtEntryType {
     const KERNEL_TLS: u16 = 3;
     const USER_CODE32_UNUSED: u16 = 4;
     const USER_DATA: u16 = 5;
-    const USER_CODE: 16 = 6;
+    const USER_CODE: u16 = 6;
     const TSS: u16 = 7;
     const TSS_HIGH: u16 = 8;
     const CPUID_CONTAINER: u16 = 9;
@@ -125,8 +125,8 @@ pub unsafe fn init() {
     let limit = (INIT_GDT.len() * mem::size_of::<GdtEntry>() - 1)
         .try_into()
         .expect("Initial GDT is too large");
-    let base = INIT_GDT as *const SegmentDescriptor;
-    let init_gdtr = DescriptorTablePointer<SegmentDescriptor> = DescriptorTablePointer::new(
+    let base = INIT_GDT.as_ptr() as *const SegmentDescriptor;
+    let init_gdtr = DescriptorTablePointer::<SegmentDescriptor> = DescriptorTablePointer::new(
         limit,
         base
     );
