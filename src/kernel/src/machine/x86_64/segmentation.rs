@@ -1,4 +1,5 @@
 use core::arch::asm;
+use crate::machine::Ring;
 
 bitflags::bitflags! {
     /// Specifies which element to load into a segment from descriptor tables (i.e., is a index to
@@ -44,14 +45,14 @@ impl SegmentSelector {
 #[derive(Copy, Clone, Debug, Default)]
 #[repr(packed)]
 pub struct Descriptor {
-    lower: u32;
-    upper: u32;
+    pub lower: u32,
+    pub upper: u32,
 }
 
 impl Descriptor {
     /// Create a new segment, TSS, or LDT descriptor by setting the base and limit fields of the
     /// descriptor.
-    fn set_base_limit(&mut self, base: u32, limit: u32) {
+    pub fn set_base_limit(&mut self, base: u32, limit: u32) {
         // Clear the base and limit fields.
         self.lower = 0;
         self.upper &= 0x00F0FF00;
@@ -68,7 +69,7 @@ impl Descriptor {
 
     /// Set the type of the descriptor. Indicates the segment or gate type and specifies the kinds
     /// of access and the direction of growth.
-    fn set_type(&mut self, kind: u8) {
+    pub fn set_type(&mut self, kind: u8) {
         // Clear the field before updating it.
         self.upper &= !(0x0F << 8);
         self.upper |= (kind as u32 & 0x0F) << 8;
@@ -76,31 +77,31 @@ impl Descriptor {
 
     /// Specify whether the segment descriptor if for a system segment (cleared) or a code or data
     /// segment (set).
-    fn set_system(&mut self) {
+    pub fn set_system(&mut self) {
         self.upper |= 1 << 12;
     }
 
     /// Specify the priviledge level of the segment. Used to control access to the segment.
-    fn set_dpl(&mut self, ring: Ring) {
-        assert!(ring as u32 < 0b11);
-        self.upper &= ~(0b11 << 13);
+    pub fn set_dpl(&mut self, ring: Ring) {
+        assert!(ring as u32 <= 0b11);
+        self.upper &= !(0b11 << 13);
         self.upper |= (ring as u32) << 13;
     }
 
     /// Set the present bit. Indicates whether the segment is in memory (set) or not present
     /// (clear). If clear, a segment-not-present exception is thrown.
-    fn set_present(&mut self) {
+    pub fn set_present(&mut self) {
         self.upper |= 1 << 15;
     }
 
     /// Set the AVL bit. Can be used by system software to store information.
-    fn set_avl(&mut self) {
+    pub fn set_avl(&mut self) {
         self.upper |= 1 << 20;
     }
 
     /// Set the granularity bit. Determines the scaling of the segment limit field. The limit is
     /// interpreted in bytes when cleared and 4-KByte units when set.
-    fn set_granularity(&mut self) {
+    pub fn set_granularity(&mut self) {
         self.upper |= 1 << 23;
     }
 }

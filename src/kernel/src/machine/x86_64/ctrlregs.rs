@@ -79,3 +79,31 @@ bitflags::bitflags! {
         const VME = 1 << 0;
     }
 }
+
+/// Read from the CR0 control-register.
+pub fn cr0() -> Cr0 {
+    let value: usize;
+    unsafe {
+        asm!("mov cr0, {0}", in(reg) value);
+    }
+    Cr0::from_bits_truncate(value)
+}
+
+/// Write to the CR0 control-register.
+pub unsafe fn write_cr0(value: Cr0) {
+    asm!("mov cr0, {0}", in(reg) value.bits());
+}
+
+/// Read from the CR3 control-register.
+pub fn cr3() -> usize {
+    let value: usize;
+    unsafe {
+        asm!("mov cr3, {0}", in(reg) value);
+    }
+    value
+}
+
+/// Write to the CR3 control-register.
+pub unsafe fn write_cr3(value: usize) {
+    asm!("mov cr3, {0}", in(reg) value);
+}

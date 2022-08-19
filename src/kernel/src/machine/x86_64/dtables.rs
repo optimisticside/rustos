@@ -1,4 +1,4 @@
-use crate::segmentation::SegmentSelector;
+use crate::machine::segmentation::SegmentSelector;
 use core::arch::asm;
 use core::mem::size_of;
 
@@ -12,17 +12,26 @@ pub struct DescriptorTablePointer<Entry> {
     base: *const Entry,
 }
 
-impl<T> Default for DescriptorTableEntry<T> {
-    const fn new(tbl: &T) -> Self {
+impl<T> Default for DescriptorTablePointer<T> {
+    fn default() -> Self {
+        Self {
+            limit: 0,
+            base: core::ptr::null(),
+        }
+    }
+}
+
+impl<T> DescriptorTablePointer<T> {
+    fn new(table: &T) -> Self {
         let length = size_of::<T>() - 1;
-        assert!(len < 0x10000);
+        assert!(length < 0x10000);
         Self {
             base: table as *const T,
             limit: length as u16,
         }
     }
 
-    const fn from_slize(table: &[T]) -> Self {
+    fn from_slice(table: &[T]) -> Self {
         let length = table.len() - 1;
         assert!(length < 0x100000);
         Self {
@@ -40,6 +49,6 @@ pub unsafe fn load_gdt<T>(gdt: &DescriptorTablePointer<T>) {
 
 /// Retrieve the base and the limit from the GDTR register.
 #[inline(always)]
-pub unsafe fn store_gdt<T>(gdt: &DescriptorTablePointer<T>) {
+pub unsafe fn store_gdt<T>(gdt: &mut DescriptorTablePointer<T>) {
     asm!("sgdt [{0}]", in(reg) gdt as *mut DescriptorTablePointer<T>, options(nostack));
 }

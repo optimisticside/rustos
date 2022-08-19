@@ -8,5 +8,5 @@ pub unsafe fn flush(addr: usize) {
 
 /// Invalidates the entire TLB by setting the CR3 register to itself.
 pub unsafe fn flush_all() {
-    ctrlregs::set_cr3(ctrlregs::cr3());
+    ctrlregs::write_cr3(ctrlregs::cr3());
 }
