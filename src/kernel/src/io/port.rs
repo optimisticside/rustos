@@ -54,3 +54,69 @@ impl IoVec for PortIo<u8> {
         }
     }
 }
+
+/// Implementation for port I/O that involves words (two bytes).
+impl IoVec for PortIo<u16> {
+    type Value = u16;
+
+    /// Reads a word from the port.
+    #[inline(always)]
+    fn read(&self) -> u16 {
+        let value: u16;
+        unsafe {
+            asm!(
+                "in ax, dx",
+                in("dx") self.port,
+                out ("ax") value,
+                options(nostack, nomem, preserves_flags)
+            );
+        }
+        value
+    }
+
+    /// Write a word to the port.
+    #[inline(always)]
+    fn write(&mut self, value: u16) {
+        unsafe {
+            asm!(
+                "out dx, ax",
+                in("dx") self.port,
+                in("ax") value,
+                options(nostack, nomem, preserves_flags)
+            );
+        }
+    }
+}
+
+/// Implementation for port I/O that involves double-words (four bytes).
+impl IoVec for PortIo<u32> {
+    type Value = u32;
+
+    /// Reads a double-word from the port.
+    #[inline(always)]
+    fn read(&self) -> u32 {
+        let value: u32;
+        unsafe {
+            asm!(
+                "in eax, dx",
+                in("dx") self.port,
+                out ("eax") value,
+                options(nostack, nomem, preserves_flags)
+            );
+        }
+        value
+    }
+
+    /// Write a double-word to the port.
+    #[inline(always)]
+    fn write(&mut self, value: u32) {
+        unsafe {
+            asm!(
+                "out dx, eax",
+                in("dx") self.port,
+                in("eax") value,
+                options(nostack, nomem, preserves_flags)
+            );
+        }
+    }
+}
