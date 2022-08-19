@@ -126,10 +126,10 @@ pub unsafe fn init() {
         .try_into()
         .expect("Initial GDT is too large");
     let base = INIT_GDT.as_ptr() as *const SegmentDescriptor;
-    let init_gdtr = DescriptorTablePointer::<SegmentDescriptor> = DescriptorTablePointer::new(
+    let init_gdtr: DescriptorTablePointer<SegmentDescriptor> = DescriptorTablePointer {
         limit,
-        base
-    );
+        base,
+    };
 
     // Load the initial GDT.
     dtables::load_gdt(&init_gdtr);
