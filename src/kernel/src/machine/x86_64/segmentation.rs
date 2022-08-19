@@ -1,5 +1,5 @@
-use core::arch::asm;
 use crate::machine::Ring;
+use core::arch::asm;
 
 bitflags::bitflags! {
     /// Specifies which element to load into a segment from descriptor tables (i.e., is a index to
@@ -189,4 +189,3 @@ pub fn gs() -> SegmentSelector {
     }
     SegmentSelector::from_raw(segment)
 }
-

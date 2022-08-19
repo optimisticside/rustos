@@ -1,5 +1,5 @@
-use core::arch::asm;
 use crate::machine::ctrlregs;
+use core::arch::asm;
 
 /// Invalidate the given address in the TLB through the `invlpg` instruction.
 pub unsafe fn flush(addr: usize) {
