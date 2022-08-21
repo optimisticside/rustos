@@ -1,5 +1,5 @@
 use core::arch::asm;
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 use crate::io::io::IoVec;
 
