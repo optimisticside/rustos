@@ -1,3 +1,4 @@
+use core::fmt;
 use crate::devices::{Device, DeviceError};
 
 /// A character device is one that only read and write one character at a time.
