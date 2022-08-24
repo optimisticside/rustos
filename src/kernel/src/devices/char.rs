@@ -49,3 +49,20 @@ impl CharDeviceSwitch for CharDevice {
         self.inner.put_char(byte)
     }
 }
+
+impl fmt::Write for CharDevice {
+    /// Write a string to the character device, and unlike the character device, use UNIX-LF
+    /// line-endings where `\n` translates to `\r\n`.
+    fn write_str(&mut self, string: &str) -> fmt::Result {
+        // TODO: Match result of [`CharDevice::put_char`] to handle any device errors.
+        for byte in string.bytes() {
+            if byte == '\n' as u8 {
+                self.put_char('\r');
+            }
+
+            self.put_char(byte)
+        }
+
+        Ok(())
+    }
+}
