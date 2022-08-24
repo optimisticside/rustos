@@ -39,12 +39,12 @@ pub struct KernelArgs {
 /// Kernel entry-point for x86_64. Everything that is architecture-specific must be initialized
 /// here, before calling architecutre-independent kernel code.
 #[no_mangle]
-pub unsafe extern "C" fn start(args_ptr: *const KernelArgs) -> ! {
-    let args = args_ptr.read();
+pub unsafe extern "C" fn _start(/*args_ptr: *const KernelArgs*/) -> ! {
+    // let args = args_ptr.read();
 
     // Set up GDT and IDT before initializing paging.
     // gdt::init();
-    idt::init();
+    // idt::init();
 
     // Set up serial communication.
     let mut serial_port = SerialPort::<PortIo<u8>>::new(0x3F8);
