@@ -2,21 +2,20 @@
 #![no_main]
 
 extern crate alloc;
+extern crate core;
 
 mod machine;
-//mod filesys;
+mod filesys;
 mod devices;
-//mod socket;
+mod socket;
+mod sync;
 mod io;
 mod utils;
+mod unwind;
+mod memory;
 
-use core::panic::PanicInfo;
 use utils::bootstrap::Bootstrap;
-
-/// Panic routine that loops forever.
-fn panic(_info: &PanicInfo) -> ! {
-    loop {}
-}
+use self::unwind::*;
 
 /// Architecture-independent kernel entry-point called by architecture-specific
 /// code.
