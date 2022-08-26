@@ -1,7 +1,7 @@
-use crate::machine::{gdt, idt};
-use crate::devices::*;
 use crate::devices::uart_16550::*;
+use crate::devices::*;
 use crate::io::PortIo;
+use crate::machine::{gdt, idt};
 
 /// Passed to the kernel entry-point. Same format as the bootloader for Redux OS.
 #[repr(packed)]
@@ -34,7 +34,6 @@ pub struct KernelArgs {
     /// Entry point the kernel will jump to.
     bootstrap_entry: u64,
 }
-
 
 /// Kernel entry-point for x86_64. Everything that is architecture-specific must be initialized
 /// here, before calling architecutre-independent kernel code.

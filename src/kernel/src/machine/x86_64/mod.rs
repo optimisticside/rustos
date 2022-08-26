@@ -2,20 +2,20 @@ use core::arch::asm;
 
 pub use self::start::*;
 
-pub mod idt;
-pub mod gdt;
 pub mod apic;
 pub mod ctrlregs;
 pub mod dtables;
 pub mod fence;
+pub mod gdt;
+pub mod idt;
 //pub mod io;
 pub mod irq;
 pub mod msr;
 pub mod segmentation;
 //pub mod task;
+pub mod start;
 pub mod time;
 pub mod tlb;
-pub mod start;
 
 /// x86 Protection levels
 ///

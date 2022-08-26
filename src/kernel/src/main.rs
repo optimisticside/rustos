@@ -4,18 +4,18 @@
 extern crate alloc;
 extern crate core;
 
-mod machine;
-mod filesys;
 mod devices;
+mod filesys;
+mod io;
+mod machine;
+mod memory;
 mod socket;
 mod sync;
-mod io;
-mod utils;
 mod unwind;
-mod memory;
+mod utils;
 
-use utils::bootstrap::Bootstrap;
 use self::unwind::*;
+use utils::bootstrap::Bootstrap;
 
 /// Architecture-independent kernel entry-point called by architecture-specific
 /// code.

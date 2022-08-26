@@ -1,4 +1,2 @@
 /// Holder function.
-pub fn init() {
-
-}
+pub fn init() {}

@@ -1,5 +1,5 @@
-use core::fmt;
 use crate::devices::{Device, DeviceError};
+use core::fmt;
 
 /// A character device is one that only read and write one character at a time.
 pub trait CharDeviceSwitch {
@@ -58,10 +58,10 @@ impl fmt::Write for CharDevice {
         // TODO: Match result of [`CharDevice::put_char`] to handle any device errors.
         for byte in string.bytes() {
             if byte == '\n' as u8 {
-                self.put_char('\r');
+                self.put_char('\r' as u8);
             }
 
-            self.put_char(byte)
+            self.put_char(byte);
         }
 
         Ok(())

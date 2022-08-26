@@ -1,8 +1,8 @@
 use core::alloc::Layout;
 use core::mem;
 
-use crate::machine::segmentation::{self, Descriptor as SegmentDescriptor, SegmentSelector};
 use crate::machine::dtables::{self, DescriptorTablePointer};
+use crate::machine::segmentation::{self, Descriptor as SegmentDescriptor, SegmentSelector};
 use crate::machine::Ring;
 
 /// One allocated per entry in the global descriptor table (GDT).
@@ -36,7 +36,6 @@ impl GdtEntry {
         }
     }
 }
-
 
 static mut INIT_GDT: [GdtEntry; 4] = [
     // Null
@@ -126,10 +125,8 @@ pub unsafe fn init() {
         .try_into()
         .expect("Initial GDT is too large");
     let base = INIT_GDT.as_ptr() as *const SegmentDescriptor;
-    let init_gdtr: DescriptorTablePointer<SegmentDescriptor> = DescriptorTablePointer {
-        limit,
-        base,
-    };
+    let init_gdtr: DescriptorTablePointer<SegmentDescriptor> =
+        DescriptorTablePointer { limit, base };
 
     // Load the initial GDT.
     dtables::load_gdt(&init_gdtr);
