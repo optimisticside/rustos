@@ -5,7 +5,8 @@ use crate::devices::DeviceError;
 ///
 /// Generally, this trait is implemented by device-wrappers that hold an internal device "switch."
 /// A device switch is the trait that implements all the I/O routines specific to that type of
-/// device, which are implemented by the device's drivers.
+/// device, which are implemented by the device's drivers, and use I/O Vectors to communicate with
+/// physical devices (through port I/O, memory-mapped I/O, etc).
 pub trait Device {
     /// Read the given number of bytes (through the buffer length) into the provided buffer, from
     /// the given location.
