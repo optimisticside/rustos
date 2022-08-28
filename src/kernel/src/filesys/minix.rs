@@ -48,5 +48,3 @@ pub struct DirEntry {
     /// Name of the file with a 60-character limit.
     pub name: [u8: 60],
 }
-
-
