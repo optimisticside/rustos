@@ -1,5 +1,5 @@
 use alloc::collections::vec_deque::VecDeque;
-use crate::devices::CharDeviceSwitch;
+use crate::devices::{CharDeviceSwitch, DeviceError};
 
 /// Teletypes abstract over character devices, just like a buffered-device would abstract over a
 /// block device.
@@ -16,5 +16,11 @@ pub struct Teletype {
 }
 
 impl CharDeviceSwitch for Teletype {
-    
+    fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
+
+    }
+
+    fn get_char(&mut self, byte: u8) -> Result<(), DeviceError> {
+        
+    }
 }
