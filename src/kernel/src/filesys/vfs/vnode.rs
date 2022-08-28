@@ -27,6 +27,8 @@ pub struct Vnode {
     ref_count: usize,
     /// Type of V-node. All interface-operations and other kind-specific data are stored here.
     kind: VnodeKind,
+    /// Data specific to the file-system that the V-node is physically stored on.
+    data: VnodeData,
     /// Device that the V-node is stored on.
     device: Arc<dyn Device>,
 }
@@ -60,20 +62,19 @@ pub trait FileInterface: VnodeInterface {
 pub trait DirectoryInterface: VnodeInterface {
     /// Allows caller to read entries of the directory, by providing the next entry in the
     /// directory (or the first if the user does not provide a directory-entry).
-    fn readdir(vnode: &Vnode, dir_entry: Option<DirEntry>) -> Result<Option<Arc<DirEntry>>, FileSysError>;
+    fn read_dir(vnode: &Vnode, dir_entry: Option<DirEntry>) -> Result<Option<Arc<DirEntry>>, FileSysError>;
     /// Create a directory with the provided name.
-    fn mkdir(vnode: &Vnode, name: &str) -> Result<Vnode, FileSysError>;
+    fn make_dir(vnode: &Vnode, name: &str) -> Result<Vnode, FileSysError>;
     /// Remove a directory given its name.
-    fn rmdir(vnode: &Vnode, name: &str) -> Result<(), FileSysError>;
+    fn remove_dir(vnode: &Vnode, name: &str) -> Result<(), FileSysError>;
     /// Open a new file in the directory, and create one if it does not exist.
     fn open(vnode: &Vnode, name: &str, flags: AccessFlags) -> Result<FileDescriptor, FileSysError>;
     /// Close a held file-descriptor.
     fn close(vnode: &Vnode, file_desc: &FileDescriptor) -> Result<(), FileSysError>;
     /// Create a custom V-node inside the directory. This is usually used to create devices, such
     /// as in a `/dev` directory.
-    fn mknod(vnode: &Vnode, kind: VnodeKind) -> Result<(), FileSysError>;
+    fn make_node(vnode: &Vnode, kind: VnodeKind) -> Result<(), FileSysError>;
 }
 
-/// Callbacks for super-blocks.
-pub trait SuperBlockInterface: VnodeInterface {
-}
+/// Callbacks for file-system drivers.
+pub trait FileSysInterface: FileInterface + DirectoryInterface {}
