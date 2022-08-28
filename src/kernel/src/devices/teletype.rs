@@ -160,3 +160,7 @@ impl CharDeviceSwitch for Teletype {
         
     }
 }
+
+impl Teletype {
+    fn queue_get_char(&mut self, )
+}

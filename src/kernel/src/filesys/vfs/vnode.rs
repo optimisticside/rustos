@@ -41,7 +41,7 @@ pub trait VnodeInterface: Send + Sync {
     /// de-allocating the V-node if the count reaches 0.
     fn unlink(vnode: &Vnode, name: &str) -> Result<(), FileSysError>;
     /// Perform an I/O control call on the device (for device-specific things).
-    fn ioctl(vnode: &Vnode, operation: usize, buffer: &[u8]) -> Result<(), FileSysError>;
+    fn io_control(vnode: &Vnode, operation: usize, buffer: &[u8]) -> Result<(), FileSysError>;
 }
 
 /// Callbacks that can be run for directory entries (files).

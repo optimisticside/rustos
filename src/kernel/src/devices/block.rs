@@ -32,6 +32,11 @@ impl Device for BlockDevice {
     fn write(&mut self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         Ok(buffer.len())
     }
+
+    /// Perform an I/O control operation.
+    fn ioctl(&mut self, command: usize, buffer: &[u8]) -> Result<(), DeviceError> {
+        self.inner.ioctl(command, buffer)
+    }
 }
 
 impl BlockDeviceSwitch for BlockDevice {

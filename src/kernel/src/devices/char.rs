@@ -1,8 +1,8 @@
-use crate::devices::{Device, DeviceError};
+use crate::devices::{Device, DeviceSwitch, DeviceError};
 use core::fmt;
 
 /// A character device is one that only read and write one character at a time.
-pub trait CharDeviceSwitch {
+pub trait CharDeviceSwitch: DeviceSwitch {
     /// Write a single character to the device.
     fn get_char(&self) -> Result<u8, DeviceError>;
 
@@ -36,6 +36,11 @@ impl Device for CharDevice {
         }
 
         Ok(buffer.len())
+    }
+
+    /// Perform an I/O control operation.
+    fn ioctl(&mut self, command: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
+        self.inner.ioct(command, buffer)
     }
 }
 
