@@ -21,4 +21,12 @@ pub struct Descriptor {
     pub next: u16,
 }
 
-
+#[repr(C)]
+pub struct Available {
+    pub flags: u16,
+    pub index: u16,
+    /// The driver uses the available-ring to offer buffers to the device. Each ring refers to the
+    /// head of a descriptor-chain. It is only written to and read from by the device itself.
+    pub ring: [u16; VIRTIO_RING_SIZE],
+    pub event: u16,
+}

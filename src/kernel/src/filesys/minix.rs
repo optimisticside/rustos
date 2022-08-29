@@ -1,5 +1,5 @@
 use crate::filesys::FileSystemError;
-use crate::filesys::vfs::{Vnode, VnodeData, VnodeFileSystem, FileSystemInterface};
+use crate::filesys::vfs::{Vnode, VnodeData, VnodeFileSystemData, FileSystemInterface};
 
 /// The super-block describes the file system on the disk. It gives us all the information we need
 /// to read and write to the file system, such as where to find i-nodes and zones (blocks).
@@ -55,8 +55,8 @@ pub struct DirEntry {
 pub struct MinixFileSystem;
 impl FileSystemInterface for MinixFileSystem {
     fn read(vnode: &Vnode, offset: usize, buffer: &[u8]) -> Result<usize, FileSysError> {
-        let inode = match vnode.file_system {
-            VnodeFileSystem::Minix(&inode) => inode,
+        let inode = match vnode.file_sys_data {
+            VnodeFileSystemData::Minix(&inode) => inode,
             _ => return Err((FileSysError::NotSupported)),
         };
 

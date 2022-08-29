@@ -21,7 +21,7 @@ pub enum VnodeData {
 }
 
 /// Types of V-node data. This is data that is specific to the V-node's file-system.
-pub enum VnodeFileSystem {
+pub enum VnodeFileSystemData {
     /// There is no file-system. This is the case for V-nodes that do not map to files or
     /// directories and are instead the devices themselves or something else (like a Socket).
     Null,
@@ -33,13 +33,13 @@ pub enum VnodeFileSystem {
 /// file, directory, mounted-file, and the file-system's root.
 pub struct Vnode {
     /// Number of references to node. Will be reallocated if this reaches 0.
-    ref_count: usize,
+    pub ref_count: usize,
     /// Type of V-node. All interface-operations and other kind-specific data are stored here.
-    data: VnodeData,
+    pub data: VnodeData,
     /// Data specific to the file-system that the V-node is physically stored on.
-    file_system: VnodeFileSystem,
+    pub file_sys_data: VnodeFileSystemData,
     /// Device that the V-node is stored on.
-    device: Arc<dyn Device>,
+    pub device: Arc<dyn Device>,
 }
 
 /// Callbacks that are shared among all V-nodes.
