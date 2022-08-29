@@ -1,9 +1,9 @@
 use crate::devices::{BlockDevice, CharDevice};
-use crate::filesys::mount::MountPoint;
+use crate::filesys::{self, mount::MountPoint};
 
 /// Types of V-nodes.
 #[derive(Debug)]
-pub enum VnodeKind {
+pub enum VnodeData {
     /// Regular file.
     DirectoryEntry(FileInterface),
     /// Directory.
@@ -20,15 +20,24 @@ pub enum VnodeKind {
     SuperBlock(SuperBlockInterface),
 }
 
+/// Types of V-node data. This is data that is specific to the V-node's file-system.
+pub enum VnodeFileSystem {
+    /// There is no file-system. This is the case for V-nodes that do not map to files or
+    /// directories and are instead the devices themselves or something else (like a Socket).
+    Null,
+    /// Minix file-system.
+    Minix(filesys::minix::Inode),
+}
+
 /// A V-node is the focus of file activity on UNIX system. There is one allocated for every active
 /// file, directory, mounted-file, and the file-system's root.
 pub struct Vnode {
     /// Number of references to node. Will be reallocated if this reaches 0.
     ref_count: usize,
     /// Type of V-node. All interface-operations and other kind-specific data are stored here.
-    kind: VnodeKind,
-    /// Data specific to the file-system that the V-node is physically stored on.
     data: VnodeData,
+    /// Data specific to the file-system that the V-node is physically stored on.
+    file_system: VnodeFileSystem,
     /// Device that the V-node is stored on.
     device: Arc<dyn Device>,
 }

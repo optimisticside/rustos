@@ -1,17 +1,12 @@
-use crate::device::BlockDevice;
-use self::vnode::Vnode;
+pub use self::error::*;
+pub use self::vfs::*;
 
 pub mod ext2;
+pub mod error;
 pub mod minix;
-pub mod vnode;
+pub mod vfs;
 
-/// Represents a file-system.
-pub trait FileSystem {
-    fn read(device: BlockDevice, vnode: &Vnode, buffer: &[u8], offset: u32) -> Result<u32, FsError>;
-    fn write(
-        device: BlockDevice,
-        vnode: &Vnode,
-        buffer: &[u8],
-        offset: u32
-    ) -> Result<u32, FsError>;
+/// Types of file-systems. Used to store device-specific data in V-nodes.
+pub enum FileSysType {
+    Minix(self::minix::Inode),
 }

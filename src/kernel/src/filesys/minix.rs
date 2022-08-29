@@ -1,5 +1,5 @@
-use crate::filesys::{FileSysError, FileSysType};
-use crate::filesys::vfs::{Vnode, FileSysInterface};
+use crate::filesys::FileSystemError;
+use crate::filesys::vfs::{Vnode, VnodeData, VnodeFileSystem};
 
 /// The super-block describes the file system on the disk. It gives us all the information we need
 /// to read and write to the file system, such as where to find i-nodes and zones (blocks).
@@ -47,7 +47,7 @@ pub struct Inode {
 #[repr(C)]
 pub struct DirEntry {
     /// Block number of the associated I-node.
-    pub inode: 32,
+    pub inode: u32,
     /// Name of the file with a 60-character limit.
     pub name: [u8: 60],
 }
@@ -56,10 +56,11 @@ pub struct MinixFileSystem;
 impl FileSysInterface for MinixFileSystem {
     fn read(vnode: &Vnode, offset: usize, buffer: &[u8]) -> Result<usize, FileSysError> {
         let inode = match vnode.file_system {
-            FileSysType::Minix(&inode) => inode,
+            VnodeFileSystem::Minix(&inode) => inode,
             _ => return Err((FileSysError::NotSupported)),
-        }
+        };
 
+        let blocks_seen = 0usize;
         // Determine when we need to start reading based on our offset. Then see where we need to
         // start reading within the actual block.
         let block_offset = offset / BLOCK_SIZE;
