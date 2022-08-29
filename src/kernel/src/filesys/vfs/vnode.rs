@@ -86,4 +86,4 @@ pub trait DirectoryInterface: VnodeInterface {
 }
 
 /// Callbacks for file-system drivers.
-pub trait FileSysInterface: FileInterface + DirectoryInterface {}
+pub trait FileSystemInterface: FileInterface + DirectoryInterface {}
