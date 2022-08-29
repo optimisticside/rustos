@@ -132,7 +132,7 @@ pub struct TeletypeControl {
     /// Line dicipline.
     line_dicipline: u8,
     /// Control characters.
-    control_chars: TeletypeControlChars,
+    chars: TeletypeControlChars,
 }
 
 /// Teletypes abstract over character devices, just like a buffered-device would abstract over a
@@ -153,14 +153,19 @@ pub struct Teletype {
 
 impl CharDeviceSwitch for Teletype {
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
+   }
 
+    fn get_char(&mut self) -> Result<u8, DeviceError> {
+        let byte = self.input_queue.pop_front();
+
+        if self.control.local_flags.contains(TeletypeControlFlags::CANONICAL) {
+            if byte == '\n' as u8
+                || byte == self.control.chars.end_of_file
+                || byte == self.control.chars.end_of_line
+                || (byte == self.control.chars.end_of_line2) {
+
+            }
+        }
+ 
     }
-
-    fn get_char(&mut self, byte: u8) -> Result<(), DeviceError> {
-        
-    }
-}
-
-impl Teletype {
-    fn queue_get_char(&mut self, )
 }

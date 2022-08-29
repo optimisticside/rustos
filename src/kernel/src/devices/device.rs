@@ -14,7 +14,7 @@ pub trait DeviceSwitch {
 /// write bytes to and from the device at any position they want.
 ///
 /// Generally, this trait is implemented by device-wrappers that hold an internal
-/// [`Deviceswitch`]es.
+/// [`DeviceSwitch`]es.
 pub trait Device {
     /// Read the given number of bytes (through the buffer length) into the provided buffer, from
     /// the given location.
