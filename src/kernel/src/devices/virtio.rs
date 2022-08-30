@@ -1,3 +1,5 @@
+use crate::io::{IoVec, MemMappedIo};
+
 bitflags::bitflags! {
     pub struct DescriptorFlags: u16 {
         const NEXT = 1 << 0;
@@ -29,4 +31,27 @@ pub struct Available {
     /// head of a descriptor-chain. It is only written to and read from by the device itself.
     pub ring: [u16; VIRTIO_RING_SIZE],
     pub event: u16,
+}
+
+#[repr(usize)]
+pub enum MmioOffsets {
+	MagicValue = 0x000,
+	Version = 0x004,
+	DeviceId = 0x008,
+	VendorId = 0x00c,
+	HostFeatures = 0x010,
+	HostFeaturesSelector = 0x014,
+	GuestFeatures = 0x020,
+	GuestFeaturesSelector = 0x024,
+	GuestPageSize = 0x028,
+	QueueSelector = 0x030,
+	QueueNumberMax = 0x034,
+	QueueNumber = 0x038,
+	QueueAlign = 0x03c,
+	QueuePfn = 0x040,
+	QueueNotify = 0x050,
+	InterruptStatus = 0x060,
+	InterruptAcknowledge = 0x064,
+	Status = 0x070,
+	Config = 0x100,
 }
