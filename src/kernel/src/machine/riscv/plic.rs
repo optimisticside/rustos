@@ -16,22 +16,22 @@ pub const SUP_CLAIM_BASE: usize = PLIC_BASE + 0x201004;
 
 /// Retrieve the base of the registers for supervisor-mode claims.
 pub const fn sup_claim_base(hart: usize) -> usize {
-    PLIC_SUP_CLAIM_BASE + hart * 0x2000
+    SUP_CLAIM_BASE + hart * 0x2000
 }
 
 /// Retrieves the base of the registers for machine-mode claims.
 pub const fn mach_claim_base(hart: usize) -> usize {
-    PLIC_MACH_CLAIM_BASE + hart * 0x2000
+    MACH_CLAIM_BASE + hart * 0x2000
 }
 
 /// Retrieve the base of the supervisor-mode interrupt-enabled bitset.
 pub const fn sup_enable_base(hart: usize) -> usize {
-    PLIC_SUP_ENABLE_BASE + hart * 0x100
+    SUP_ENABLE_BASE + hart * 0x100
 }
 
 /// Retrieve the base of the machine-mode interrupt-enabled bitset.
 pub const fn mach_enable_base(hart: usize) -> usize {
-    PLIC_MACH_ENABLE_BASE + hart * 0x100
+    MACH_ENABLE_BASE + hart * 0x100
 }
 
 /// Retrieve the next available interrupt. This is by a "claim" process, where the PLIC will
@@ -56,11 +56,37 @@ pub fn complete(id: u32) {
     }
 }
 
+/// Set the global threshold. The threshold can be a value between [0..7], and the PLIC will mask
+/// any interrupts AT or below the threshold. A threshold of 7 will mask all interrupts and a
+/// threshold of 0 will allow all of them.
+pub fn set_threshold(threshold: u8) {
+    // The threshold register takes in numbers of 3 bits, so we have to truncate the provided
+    // number.
+    let actual_threshold = threshold & 7;
+    let threshold_register = THRESHOLD as *mut u32;
+
+    unsafe {
+        threshold_register.write_volatile(actual_threshold as u32);
+    }
+}
+
 /// Enable an interrupt based on its ID.
 pub fn enable(id: u32) {
     let enables = sup_enable_base() as *const u32;
     let actual_id = 1 << id;
     unsafe {
         enables.write_volatile(enables.read_volatile() | actual_id);
+    }
+}
+
+/// Set the interrupt priority to the given interrupt ID.
+pub fn set_priority(id: u32, priority: u8) {
+    // Like the threshold register, the interrupt priority register takes in numbers of 3 bits.
+    let actual_priority = priority as u32 & 7;
+    let priority_register = SUP_PRIORITY_BASE as *mut u32;
+
+    unsafe {
+        // The offset for a specific interrupt is: base + (4 * id)
+        priority_register.add(id as usize).write_volatile(actual_priority);
     }
 }
