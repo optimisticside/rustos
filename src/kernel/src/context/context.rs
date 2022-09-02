@@ -1,6 +1,8 @@
 use crate::context::ContextId;
 use crate::filesys::{Vnode, FileDescriptor};
-use crate::machine::{Context as MachineContext};
+
+use crate::machine;
+use crate::machine::context::{Context as MachineContext};
 use crate::machine::irq::InterruptStack;
 
 /// Status of context. Used for scheduling.
