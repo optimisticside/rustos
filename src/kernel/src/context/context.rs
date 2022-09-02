@@ -1,6 +1,7 @@
-use crate::machine::{Context as MachineContext};
-use crate::filesys::{Vnode, FileDescriptor};
 use crate::context::ContextId;
+use crate::filesys::{Vnode, FileDescriptor};
+use crate::machine::{Context as MachineContext};
+use crate::machine::irq::InterruptStack;
 
 /// Status of context. Used for scheduling.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -10,6 +11,7 @@ pub enum Status {
     /// Blocked from running. This is due to the context going to sleep to wait for I/O to be
     /// complete.
     Blocked,
+    /// Process is stopped (because of the provided signal number).
     Stopped(usize),
     /// The context has executed (with provided exit-code).
     Exited(usize),
@@ -48,11 +50,12 @@ pub struct Context {
     pub wakeup_time: Option<(usize, usize)>,
     /// Pending signals in the order that they will be handled.
     pub pending: VecDeque<u8>,
-    /// Machine-specific data of the context (this is usually where things like the actual CPU
-    /// state are stored).
+    /// Machine-specific data of the context (not including registers).
     pub machine: MachineContext,
     /// Kernel stack.
     pub kernel_stack: Option<Box<[u8]>>,
+    /// Kernel FX. Used to store SIMD and FPU registers.
+    pub kernel_fx: AlignedBox<[u8; machine::KERNFX_SIZE, {machine::KERNFX_ALIGN}]>,
     /// Address space containing a page table lock, and grants. Normally this will have a value,
     /// but it can be None while the context is being reaped or when a new context is created but
     /// has not yet had its address space changed. Note that these are only for user mappings, as
@@ -65,6 +68,8 @@ pub struct Context {
     pub current_dir: Arc<RwLock<Vnode>>,
     /// Open file-descriptors.
     pub files: Arc<RwLock<Vec<Option<FileDescriptor>>>>,
+    /// Pointer to user-space registers, saved after certain interrupts.
+    pub registers: Option<(usize, Unique<InterruptStack>)>
     /// Signal action handlers.
     pub signal_actions: Arc<RwLock<Vec<(SigAction, usize)>>>,
 }
