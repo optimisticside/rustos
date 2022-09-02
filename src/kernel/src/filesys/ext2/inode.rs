@@ -6,17 +6,17 @@ pub struct Inode {
     /// Type and permissions.
     mode: u16,
     /// User ID.
-    uid: u16,
+    user_id: u16,
     /// Lower 32 bits of the size in bytes.
     size: u32,
     /// Last access time.
     access_time: u32,
     /// Creation time.
-    ctime: u32,
+    create_time: u32,
     /// Last modification time.
-    mtime: u32,
+    modify_time: u32,
     /// Group ID.
-    gid: u16,
+    group_id: u16,
     /// Number of hard links (directory entries) to this inode. Data blocks are unallocated when
     /// this reaches 0.
     link_count: u16,
