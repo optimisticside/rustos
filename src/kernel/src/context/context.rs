@@ -1,9 +1,18 @@
-use crate::context::ContextId;
+use alloc::boxed::Box;
+use alloc::collections::VecDeque;
+use alloc::sync::Arc;
+use alloc::vec::Vec;
+
+use core::cmp::Ordering;
+
 use crate::filesys::{Vnode, FileDescriptor};
+use crate::Error;
 
 use crate::machine;
 use crate::machine::context::{Context as MachineContext};
-use crate::machine::irq::InterruptStack;
+use crate::machine::interrupt::InterruptStack;
+
+use spin::RwLock;
 
 /// Status of context. Used for scheduling.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -74,4 +83,15 @@ pub struct Context {
     pub registers: Option<(usize, Unique<InterruptStack>)>
     /// Signal action handlers.
     pub signal_actions: Arc<RwLock<Vec<(SigAction, usize)>>>,
+}
+
+impl Context {
+    /// Construct a new [`Context`].
+    pub const fn new(id: ContextId) -> Self {
+    }
+
+    /// Retrieve the context's address space.
+    pub fn addr_space(&self) -> Result<&Arc<RwLock<AddrSpace>>> {
+        self.addr_space.as_ref().ok_or(Error)
+    }
 }
