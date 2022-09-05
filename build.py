@@ -35,6 +35,20 @@ def run_command(args, **kwargs):
     return output.returncode, output.stdout, output.stderr
 
 
+def build_cargo_workspace(directory, command, args, cargo="cargo"):
+    code, _, _ = run_command([cargo, command, *args], cwd=directory)
+
+    if code != 0:
+        return None
+
+    _, stdout, _ = run_command(
+        [cargo, command, *args, "--message-format=json"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        cwd=directory,
+    )
+
+
 def build_kernel(args):
     command = "build"
     command_args = ["--package", "kernel", "--target", f".cargo/{args.target}.json"]
@@ -50,7 +64,10 @@ def build_kernel(args):
     elif args.document:
         command = "doc"
 
-    return build
+    if args.features:
+        command_args += ["--features", ",".join(args.features)]
+
+    return build_cargo_workspace("src", command, command_args)
 
 
 def parse_args():
@@ -72,7 +89,7 @@ def parse_args():
     )
 
     check_test.add_argument(
-        "--docs",
+        "--document",
         default=False,
         action="store_true",
         help="generates the documentation for the kernel",
