@@ -53,8 +53,50 @@ def build_kernel(args):
     return build
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Builds the RusTOS kernel and userland"
+    )
+
+    check_test = parser.add_mutually_exclusive_group()
+
+    check_test.add_argument(
+        "--clean",
+        default=False,
+        action="store_true",
+        help="removes the build artifacts",
+    )
+
+    check_test.add_argument(
+        "--test", default=False, action="store_true", help="runs the test suite"
+    )
+
+    check_test.add_argument(
+        "--docs",
+        default=False,
+        action="store_true",
+        help="generates the documentation for the kernel",
+    )
+
+    parser.add_argument(
+        "--debug",
+        default=False,
+        action="store_true",
+        help="builds the kernel and userland in debug mode",
+    )
+
+    parser.add_argument(
+        "--only-run",
+        default=False,
+        action="store_true",
+        help="runs RusTOS without re-building"
+    )
+
+    return parser.parse_args()
+
+
 def main():
-    pass
+    args = parse_args()
 
 
 if __name__ == "__main__":
