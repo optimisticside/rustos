@@ -15,9 +15,9 @@ pub enum VnodeData {
     /// Block device.
     BlockDevice(Arc<BlockDevice>),
     /// Socket.
-    Socket(Arc<Socket>),
+    Socket(SocketInterface),
     /// Super-block of file system.
-    SuperBlock(SuperBlockInterface),
+    SuperBlock(FileSystemInterface),
 }
 
 /// Types of V-node data. This is data that is specific to the V-node's file-system.
