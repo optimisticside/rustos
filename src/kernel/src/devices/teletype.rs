@@ -136,7 +136,8 @@ pub struct TeletypeControl {
 }
 
 /// Teletypes abstract over character devices, just like a buffered-device would abstract over a
-/// block device.
+/// block device. It pretends to be a [`CharDeviceSwitch`], but internally stores its own switch
+/// (which is the actual device).
 pub struct Teletype {
     /// Internal character device.
     device: dyn CharDeviceSwitch,
