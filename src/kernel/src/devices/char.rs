@@ -1,3 +1,6 @@
+use alloc::collections::vec_deque::VecDeque;
+use alloc::sync::Arc;
+use crate::sync::{Yield, RwLock};
 use crate::devices::{Device, DeviceSwitch, DeviceError};
 use core::fmt;
 
@@ -15,6 +18,8 @@ pub trait CharDeviceSwitch: DeviceSwitch {
 pub struct CharDevice {
     /// Inner character device switch.
     inner: dyn CharDeviceSwitch,
+    /// Queue for characters to be written to the device.
+    queue: Arc<RwLock<VecDeque<u8>, Yield>>,
 }
 
 impl Device for CharDevice {
@@ -22,11 +27,17 @@ impl Device for CharDevice {
     fn read(&self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         // We can ignore the position parameter, which is better than reading them just to skip
         // over them.
-        for byte in buffer.iter_mut() {
-            *byte = self.inner.get_char()?;
+        if let Ok(mut queue) = Arc::try_unwrap(self.queue).map(RwLock::into_inner) {
+            for byte in buffer.iter_mut() {
+                *byte = match self.queue.pop_front() {
+                    Some(character) => character,
+                    None => self.inner.get_char()?,
+                };
+            }
+
+            Ok(buffer.len())
         }
 
-        Ok(buffer.len())
     }
 
     /// Write all the given bytes to the device.
@@ -47,7 +58,12 @@ impl Device for CharDevice {
 impl CharDeviceSwitch for CharDevice {
     /// Wrapper for CharDeviceSwitch::get_char.
     fn get_char(&self) -> Result<u8, DeviceError> {
-        self.inner.get_char()
+        let mut queue = Arc::try_unwrap(self.queue).map(RwLock::into_inner)?;
+
+        Ok(match queue.pop_front() {
+            Some(queued) => queued,
+            None => self.inner.get_char()
+        })
     }
 
     /// Wrapper for CharDeviceSwitch::put_char.
