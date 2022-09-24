@@ -27,23 +27,27 @@ impl Device for CharDevice {
     fn read(&self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         // We can ignore the position parameter, which is better than reading them just to skip
         // over them.
-        if let Ok(mut queue) = Arc::try_unwrap(self.queue).map(RwLock::into_inner) {
-            for byte in buffer.iter_mut() {
-                *byte = match self.queue.pop_front() {
-                    Some(character) => character,
-                    None => self.inner.get_char()?,
-                };
-            }
-
-            Ok(buffer.len())
+        let mut queue = Arc::try_unwrap(self.queue).map(RwLock::into_inner)?;
+        for byte in buffer.iter_mut() {
+            *byte = match self.queue.pop_front() {
+                Some(character) => character,
+                None => self.inner.get_char()?,
+            };
         }
 
+        Ok(buffer.len())
     }
 
     /// Write all the given bytes to the device.
     fn write(&mut self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
-        for &byte in buffer {
-            self.inner.put_char(byte)?;
+        let mut queue = Arc::try_unwrap(self.queue).map(RwLock::into_inner)?;
+        if queue.len() > 0 {
+            let mut to_append: VecDeque<u8> = buffer.into();
+            queue.append(to_append);
+        } else {
+            for &byte in buffer {
+                self.inner.put_char(byte)?;
+            }
         }
 
         Ok(buffer.len())
@@ -68,7 +72,14 @@ impl CharDeviceSwitch for CharDevice {
 
     /// Wrapper for CharDeviceSwitch::put_char.
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
-        self.inner.put_char(byte)
+        if let Err(_) = self.inner.put_char(byte) {
+            Arc::try_unwrap(self.queue)
+                .map(RwLock::into_inner)?
+                .push_back(byte);
+
+        }
+
+        Ok(())
     }
 }
 
