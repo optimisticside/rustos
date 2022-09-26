@@ -54,8 +54,8 @@ impl Device for CharDevice {
     }
 
     /// Perform an I/O control operation.
-    fn ioctl(&mut self, command: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
-        self.inner.ioct(command, buffer)
+    fn io_control(&mut self, command: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
+        self.inner.io_control(command, buffer)
     }
 }
 

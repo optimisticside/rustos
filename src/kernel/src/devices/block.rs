@@ -42,8 +42,8 @@ impl Device for BlockDevice {
     }
 
     /// Perform an I/O control operation.
-    fn ioctl(&mut self, command: usize, buffer: &[u8]) -> Result<(), DeviceError> {
-        self.inner.ioctl(command, buffer)
+    fn io_control(&mut self, command: usize, buffer: &[u8]) -> Result<(), DeviceError> {
+        self.inner.io_control(command, buffer)
     }
 }
 
