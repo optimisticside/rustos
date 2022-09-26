@@ -25,6 +25,14 @@ impl Device for BlockDevice {
     fn read(&self, position: usize, buffer: &[u8]) -> Result<usize, DeviceError> {
         // We do not currently do any block caching, which we will need to impelement some time in the
         // future if we remotely care about performance.
+        let block_size = self.block_size();
+        let mut position = buffer % block_size;
+
+        for block_num in (buffer / block_size) .. ((position + buffer.len()) / block_size) {
+            // We need to allocate a buffer for the block if we are at the first or last block of
+            // the read.
+            let block = self.inner.read_block()
+        }
         Ok(buffer.len())
     }
 

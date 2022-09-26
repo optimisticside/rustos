@@ -1,11 +1,17 @@
 use crate::devices::BlockDeviceSwitch;
+use crate::sync::{RwLock, Yield};
 
 /// Each buffer represents the cached data of a physical block/sector on the disk.
-pub struct Buffer {
-    
+pub struct Buffer: Send + Sync {
+    /// Slice containing buffer's data.
+    data: Arc<RwLock<&[u8], Yield>>,
+    /// Size of buffer.
+    size: usize,
+    /// Flags
 }
 
-/// Buffered devices can be used just like block devices, but have 
+/// Buffered devices can be used just like block devices, but internally manage a buffer. They
+/// implement the [`BlockDeviceSwitch`], and can be provided to [`BlockDevice`]s.
 struct BufferedDevice {
     /// Internal block-device.
     device: dyn BlockDeviceSwitch,
