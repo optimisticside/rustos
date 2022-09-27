@@ -135,37 +135,68 @@ pub struct TeletypeControl {
     chars: TeletypeControlChars,
 }
 
+/// Window/terminal size structure.
+/// This exists only to provide a consistent interface, and is not used by the kernel.
+pub struct WindowSize {
+    /// Number of rows.
+    rows: usize,
+    /// Number of columns.
+    columns: usize,
+    /// Horizontal size in pixels.
+    x_pixels: usize,
+    /// Vertical size in pixels.
+    y_pixels: usize,
+}
+
 /// Teletypes abstract over character devices, just like a buffered-device would abstract over a
 /// block device. It pretends to be a [`CharDeviceSwitch`], but internally stores its own switch
 /// (which is the actual device).
 pub struct Teletype {
-    /// Internal character device.
+    /// Internal character device. This should not be a [`CharDevice`] that has its own buffering
+    /// system, since Teletypes have their own buffering system.
     device: dyn CharDeviceSwitch,
     /// Output queue.
-    output_queue: VecDeque<u8>,
+    output_queue: Arc<RwLock<VecDeque<u8>>>,
     /// Canonical queue. This is when terminal input is processed in lines terminated by \n. No
     /// input can be read until the entire line has been read by the user.
-    canonical_queue: VecDeque<u8>,
-    /// Raw input quque.
-    input_queue: VecDeque<u8>,
+    canonical_queue: Arc<RwLock<VecDeque<u8>>>,
+    /// Raw input queue.
+    input_queue: Arc<RwLock<VecDeque<u8>>>,
     /// Control data.
     control: TeletypeControl,
+    /// Window size.
+    win_size: WindowSize,
+    /// Current cursor position in row.
+    column: usize,
 }
 
 impl CharDeviceSwitch for Teletype {
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
-   }
+        if self.control.output_flags.contains(TeletypeOutputFlags::POST_PROCESS_OUTPUT) {
+            match byte {
+                _ => {
+                    if (byte as char).is_ascii_control() {
+                        
+                    }
+                }
+            }
+        }
+    }
 
     fn get_char(&mut self) -> Result<u8, DeviceError> {
         let byte = self.input_queue.pop_front();
 
         if self.control.local_flags.contains(TeletypeControlFlags::CANONICAL) {
-            if byte == '\n' as u8
+            if (
+                byte as char == '\n'
                 || byte == self.control.chars.end_of_file
                 || byte == self.control.chars.end_of_line
-                || (byte == self.control.chars.end_of_line2) {
+                || (byte == self.control.chars.end_of_line2
+            ) {
 
             }
+        } else {
+            
         }
  
     }
