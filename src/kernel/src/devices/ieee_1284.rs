@@ -19,7 +19,7 @@ bitflags::bitflags! {
 
 bitflags::bitflags! {
     struct ControlFlags: u8 {
-        /// Toggled to assert wait cycle.
+        /// Toggled to tell the printer to read data.
         const NO_STROBE = 1 << 0;
         /// Automatically insert a line-feed.
         const NO_AUTO_LF = 1 << 1;
@@ -67,6 +67,11 @@ impl<T: IoVec> ParallelPort<T>
 where
     T::Value: From<u8> + TryInto<u8>,
 {
+    /// Initialize the serial port so that it can start receiving data and writing it.
+    pub fn init(&mut self) {
+
+    }
+
     /// Retrieve the value of the status register.
     fn status(&self) -> StatusFlags {
         StatusFlags::from_bits_truncate(
@@ -79,7 +84,7 @@ where
     /// Retrieve the value of the control register.
     fn control(&self) -> ControlFlags {
         ControlFlags::from_bits_truncate(
-            (self.status.read & 0xff.into())
+            (self.status.read() & 0xff.into())
                 .try_into()
                 .unwrap_or(0)
         )
@@ -100,11 +105,15 @@ where
         Ok(0)
     }
 
-    /// Write a character to the port. Note that there is no abstraction over new-lines like there
-    /// is on UNIX, where you can substitute `\r\n` for `\n`.
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
-        while !self.status().contains(LineStatusFlags::OUTPUT_EMPTY) {}
+        while !self.status().contains(StatusFlags::BUSY) {}
         self.data.write(byte.into());
+
+        // Pulse the strobe to tell the printer to read the data.
+        let control = self.control();
+        self.control.write((control | ControlFlags::NO_STROBE).into());
+        self.control.write(control.into());
+
         Ok(())
     }
 }
