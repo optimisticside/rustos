@@ -1,13 +1,13 @@
-use crate::devices::{BlockDevice, CharDevice};
+use crate::devices::{Device, BlockDevice, CharDevice};
 use crate::filesys::{self, mount::MountPoint};
 
 /// Types of V-nodes.
 #[derive(Debug)]
 pub enum VnodeData {
     /// Regular file.
-    DirectoryEntry(FileInterface),
+    DirectoryEntry(dyn FileInterface),
     /// Directory.
-    Directory(DirectoryInterface),
+    Directory(dyn DirectoryInterface),
     /// Symbolic link.
     SymbolicLink(Arc<Vnode>),
     /// Character device.
@@ -15,9 +15,9 @@ pub enum VnodeData {
     /// Block device.
     BlockDevice(Arc<BlockDevice>),
     /// Socket.
-    Socket(SocketInterface),
+    Socket(dyn SocketInterface),
     /// Super-block of file system.
-    SuperBlock(FileSystemInterface),
+    SuperBlock(dyn FileSystemInterface),
 }
 
 /// Types of V-node data. This is data that is specific to the V-node's file-system.
