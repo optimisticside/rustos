@@ -49,7 +49,7 @@ pub struct DirEntry {
     /// Block number of the associated I-node.
     pub inode: u32,
     /// Name of the file with a 60-character limit.
-    pub name: [u8: 60],
+    pub name: [u8; 60],
 }
 
 pub struct MinixFileSystem;

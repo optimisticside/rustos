@@ -1,14 +1,14 @@
 use alloc::collections::vec_deque::VecDeque;
 use alloc::sync::Arc;
+use core::fmt;
 use crate::sync::{Yield, RwLock};
 use crate::devices::{Device, DeviceSwitch, DeviceError};
-use core::fmt;
+use spin::{RwLock, Yield};
 
 /// A character device is one that only read and write one character at a time.
 pub trait CharDeviceSwitch: DeviceSwitch {
     /// Write a single character to the device.
     fn get_char(&self) -> Result<u8, DeviceError>;
-
     /// Read a single character from the device.
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError>;
 }
