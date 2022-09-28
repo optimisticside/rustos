@@ -172,11 +172,14 @@ pub struct Teletype {
 
 impl CharDeviceSwitch for Teletype {
     fn put_char(&mut self, byte: u8) -> Result<(), DeviceError> {
+        let ch = byte as char;
+
         if self.control.output_flags.contains(TeletypeOutputFlags::POST_PROCESS_OUTPUT) {
             match byte {
+
                 _ => {
-                    if (byte as char).is_ascii_control() {
-                        
+                    if !ch.is_ascii_control() {
+
                     }
                 }
             }
@@ -198,6 +201,11 @@ impl CharDeviceSwitch for Teletype {
         } else {
             
         }
- 
+    }
+}
+
+impl Teletype {
+    pub(crate) fn read_canonical() {
+        
     }
 }
