@@ -56,7 +56,7 @@ impl SleepQueue {
                 iter
                     .filter(matcher)
                     .enumerate()
-                    .map(|&index, &context_id| queue.remove(index))
+                    .map(|(&index, &context_id)| queue.remove(index))
                     .collect(),
         };
     }
