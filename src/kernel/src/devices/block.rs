@@ -13,7 +13,7 @@ pub trait BlockDeviceSwitch {
 
 /// Represents a routine that can perform an operation on a block-device. This type applies to the
 /// `read` and `write` methods of [`BlockDeviceSwitch`]es.
-type StrategyRoutine = fn(&mut BlockDeviceSwitch, block_num: usize, buffer: &[u8]) -> Result<(), DeviceError>;
+type StrategyRoutine = fn(&mut dyn BlockDeviceSwitch, block_num: usize, buffer: &[u8]) -> Result<(), DeviceError>;
 
 /// Wrapper for block devices so that they can be treated as generic devices (this works with
 /// both character and block devices). Note that operations done on blocks must involve changing

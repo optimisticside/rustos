@@ -1,5 +1,13 @@
 use crate::devices::DeviceError;
 
+bitflags::bitflags! {
+    /// Operations that can be performed on a device.
+    pub struct DeviceOpers: u8 {
+        const READ = 1 << 0;
+        const WRITE = 1 << 1;
+    }
+}
+
 /// A device switch is the trait that implements all the I/O routines specific to that type of
 /// device, which are implemented by the device's drivers, and use I/O Vectors to communicate with
 /// physical devices (through port I/O, memory-mapped I/O, etc).
@@ -7,6 +15,11 @@ pub trait DeviceSwitch {
     /// Perform an I/O control operation.
     fn io_control(&mut self, _command: usize, _buffer: &[u8]) -> Result<(), DeviceError> {
         Ok(())
+    }
+
+    /// Poll the device for I/O readiness.
+    fn poll(&self) -> DeviceOpers {
+        0.into()
     }
 }
 
