@@ -3,7 +3,7 @@ use crate::filesys::{self, mount::MountPoint};
 
 /// Types of V-nodes.
 #[derive(Debug)]
-pub enum VnodeData {
+pub enum VnodeKind {
     /// Regular file.
     DirectoryEntry(dyn FileInterface),
     /// Directory.
@@ -21,7 +21,7 @@ pub enum VnodeData {
 }
 
 /// Types of V-node data. This is data that is specific to the V-node's file-system.
-pub enum VnodeFileSystemData {
+pub enum VnodeFileSystem {
     /// There is no file-system. This is the case for V-nodes that do not map to files or
     /// directories and are instead the devices themselves or something else (like a Socket).
     Null,
@@ -35,9 +35,9 @@ pub struct Vnode {
     /// Number of references to node. Will be reallocated if this reaches 0.
     pub ref_count: usize,
     /// Type of V-node. All interface-operations and other kind-specific data are stored here.
-    pub data: VnodeData,
+    pub kind: VnodeKind,
     /// Data specific to the file-system that the V-node is physically stored on.
-    pub file_sys_data: VnodeFileSystemData,
+    pub file_sys: VnodeFileSystem,
     /// Device that the V-node is stored on.
     pub device: Arc<dyn Device>,
 }
