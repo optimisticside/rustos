@@ -1,5 +1,6 @@
 use crate::devices::{Device, BlockDevice, CharDevice};
 use crate::filesys::{self, mount::MountPoint};
+use crate::ipc::socket::SocketAddress;
 
 /// Types of V-nodes.
 #[derive(Debug)]
@@ -83,6 +84,19 @@ pub trait DirectoryInterface: VnodeInterface {
     /// Create a custom V-node inside the directory. This is usually used to create devices, such
     /// as in a `/dev` directory.
     fn make_node(vnode: &Vnode, kind: VnodeKind) -> Result<(), FileSysError>;
+}
+
+/// Callbacks for sockets.
+pub trait SocketInterface: FileInterface {
+    /// Listen for connections on a socket.
+    fn listen(vnode: &Vnode, backlog: usize) -> Result<(), FileSysError>;
+    /// Tell the socket what port we want to serve.
+    fn bind(vnode: &Vnode, addr: SocketAddress, length: usize) -> Result<(), FileSysError>;
+    /// Connect socket to specific port on a remote system. This is usually done right after the
+    /// socket is created.
+    fn connect(vnode: &Vnode, addr: SocketAddress, length: usize) -> Result<(), FileSysError>;
+    /// Accept a connection request from a client (made through [`SocketInterface::connect`]).
+    fn accept(vnode: &Vnode, addr: Option<&mut SocketAddress>) -> Result<Arc<Socket>, FileSysError>;
 }
 
 /// Callbacks for file-system drivers.
