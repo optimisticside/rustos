@@ -2,6 +2,7 @@ use crate::devices::{Device, BlockDevice, CharDevice};
 use crate::filesys::{self, AccessFlags, DirectoryEntry, FileDescriptor};
 use crate::filesys::mount::MountPoint;
 use crate::ipc::socket::SocketAddress;
+use crate::time::TimeSpec;
 
 /// Types of V-nodes.
 #[derive(Debug)]

@@ -2,6 +2,8 @@ use alloc::collections::VecDeque;
 use alloc::sync::{Arc, Weak};
 use alloc::vec::Vec;
 
+use crate::filesys::FileSysError;
+use crate::filesys::vnode::SocketInterface;
 use crate::ipc::message::{MessageQueue, Message};
 
 #[derive(Debug)]
@@ -15,4 +17,8 @@ pub enum UnixSocketState {
     Connected(Arc<UnixSocket>),
 }
 
-
+impl SocketInterface for UnixSocket {
+    fn listen(&self, backlog: usize) -> Result<(), FileSysError> {
+        
+    }
+}
