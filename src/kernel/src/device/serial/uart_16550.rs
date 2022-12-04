@@ -2,7 +2,7 @@
 use crate::io::PortIo;
 use crate::io::{IoVec, MemMappedIo, ReadOnly};
 
-use crate::devices::{CharDeviceSwitch, DeviceError};
+use crate::device::{CharDeviceSwitch, DeviceError};
 
 bitflags::bitflags! {
     struct LineStatusFlags: u8 {

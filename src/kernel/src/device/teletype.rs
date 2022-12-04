@@ -1,5 +1,5 @@
 use alloc::collections::vec_deque::VecDeque;
-use crate::devices::{CharDeviceSwitch, DeviceError};
+use crate::device::{CharDeviceSwitch, DeviceError};
 
 bitflags::bitflags! {
     pub struct TeletypeInputFlags: u64 {

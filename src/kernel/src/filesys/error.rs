@@ -1,5 +1,5 @@
+use crate::device::DeviceError;
 use core::convert::From;
-use crate::devices::DeviceError;
 
 /// Representation of an error as the result of an file-operation on a file-system. Provided through
 /// all I/O routines of file-systems (since they all return a `Result`).
@@ -23,8 +23,6 @@ pub enum FileSystemError {
 
 impl From<DeviceError> for FileSystemError {
     fn from(device_error: DeviceError) -> Self {
-        match device_error {
-            
-        }
+        match device_error {}
     }
 }

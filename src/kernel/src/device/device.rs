@@ -1,4 +1,4 @@
-use crate::devices::DeviceError;
+use crate::device::DeviceError;
 
 bitflags::bitflags! {
     /// Operations that can be performed on a device.

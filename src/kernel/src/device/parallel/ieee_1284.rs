@@ -2,7 +2,7 @@
 use crate::io::PortIo;
 use crate::io::{IoVec, MemMappedIo, ReadOnly};
 
-use crate::devices::{CharDeviceSwitch, DeviceError};
+use crate::device::{CharDeviceSwitch, DeviceError};
 
 bitflags::bitflags! {
     struct StatusFlags: u8 {
@@ -68,26 +68,16 @@ where
     T::Value: From<u8> + TryInto<u8>,
 {
     /// Initialize the serial port so that it can start receiving data and writing it.
-    pub fn init(&mut self) {
-
-    }
+    pub fn init(&mut self) {}
 
     /// Retrieve the value of the status register.
     fn status(&self) -> StatusFlags {
-        StatusFlags::from_bits_truncate(
-            (self.status.read() & 0xFF.into())
-                .try_into()
-                .unwrap_or(0),
-        )
+        StatusFlags::from_bits_truncate((self.status.read() & 0xFF.into()).try_into().unwrap_or(0))
     }
 
     /// Retrieve the value of the control register.
     fn control(&self) -> ControlFlags {
-        ControlFlags::from_bits_truncate(
-            (self.status.read() & 0xff.into())
-                .try_into()
-                .unwrap_or(0)
-        )
+        ControlFlags::from_bits_truncate((self.status.read() & 0xff.into()).try_into().unwrap_or(0))
     }
 }
 
@@ -111,7 +101,8 @@ where
 
         // Pulse the strobe to tell the printer to read the data.
         let control = self.control();
-        self.control.write((control | ControlFlags::NO_STROBE).into());
+        self.control
+            .write((control | ControlFlags::NO_STROBE).into());
         self.control.write(control.into());
 
         Ok(())

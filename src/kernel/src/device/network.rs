@@ -1,4 +1,4 @@
-use crate::devices::{Device, DeviceError};
+use crate::device::{Device, DeviceError};
 use crate::network::Packet;
 
 /// A network device is one that has the ability to send and recieve packets to and from given

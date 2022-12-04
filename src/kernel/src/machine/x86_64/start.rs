@@ -1,5 +1,5 @@
-use crate::devices::uart_16550::*;
-use crate::devices::*;
+use crate::device::uart_16550::*;
+use crate::device::*;
 use crate::io::PortIo;
 use crate::machine::{gdt, idt};
 

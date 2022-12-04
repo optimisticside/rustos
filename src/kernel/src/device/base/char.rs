@@ -1,9 +1,9 @@
+use crate::device::{Device, DeviceError, DeviceSwitch};
+use crate::sync::rwlock::RwLock;
+use crate::sync::Yield;
 use alloc::collections::vec_deque::VecDeque;
 use alloc::sync::Arc;
 use core::fmt;
-use crate::sync::rwlock::RwLock;
-use crate::sync::Yield;
-use crate::devices::{Device, DeviceSwitch, DeviceError};
 
 /// A character device is one that only read and write one character at a time.
 pub trait CharDeviceSwitch: DeviceSwitch {
@@ -66,7 +66,7 @@ impl CharDeviceSwitch for CharDevice {
 
         Ok(match queue.pop_front() {
             Some(queued) => queued,
-            None => self.inner.get_char()
+            None => self.inner.get_char(),
         })
     }
 
@@ -76,7 +76,6 @@ impl CharDeviceSwitch for CharDevice {
             Arc::try_unwrap(self.queue)
                 .map(RwLock::into_inner)?
                 .push_back(byte);
-
         }
 
         Ok(())

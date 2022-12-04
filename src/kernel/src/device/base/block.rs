@@ -1,4 +1,4 @@
-use crate::devices::{Device, DeviceError};
+use crate::device::{Device, DeviceError};
 
 /// A block device is one that does operations on blocks, at random access. Each block is a unit of
 /// data of an arbitrary size.
@@ -13,7 +13,8 @@ pub trait BlockDeviceSwitch {
 
 /// Represents a routine that can perform an operation on a block-device. This type applies to the
 /// `read` and `write` methods of [`BlockDeviceSwitch`]es.
-type StrategyRoutine = fn(&mut dyn BlockDeviceSwitch, block_num: usize, buffer: &[u8]) -> Result<(), DeviceError>;
+type StrategyRoutine =
+    fn(&mut dyn BlockDeviceSwitch, block_num: usize, buffer: &[u8]) -> Result<(), DeviceError>;
 
 /// Wrapper for block devices so that they can be treated as generic devices (this works with
 /// both character and block devices). Note that operations done on blocks must involve changing
@@ -31,7 +32,7 @@ impl BlockDevice {
         &mut self,
         position: usize,
         buffer: &[u8],
-        routine: StrategyRoutine
+        routine: StrategyRoutine,
     ) -> Result<usize, DeviceError> {
         let block_size = self.block_size();
         if position % block_size != 0 || buffer.len() % block_size != 0 {
@@ -41,14 +42,14 @@ impl BlockDevice {
         let mut read = 0;
         let start_block = position / block_size;
 
-        for block in start_block .. (start_block + buffer.len() / block_size) {
+        for block in start_block..(start_block + buffer.len() / block_size) {
             let start = block_size * (block - start_block);
-            self.inner.read_block(block, &buffer[start .. start + block_size])?;
+            self.inner
+                .read_block(block, &buffer[start..start + block_size])?;
             read += block_size;
         }
 
         Ok(read)
- 
     }
 }
 
