@@ -2,7 +2,7 @@
 use crate::io::PortIo;
 use crate::io::{IoVec, MemMappedIo, ReadOnly};
 
-use crate::device::{CharDeviceSwitch, DeviceError};
+use crate::device::{self, DeviceError};
 
 bitflags::bitflags! {
     struct StatusFlags: u8 {
@@ -81,13 +81,13 @@ where
     }
 }
 
-impl<T: IoVec> CharDeviceSwitch for ParallelPort<T>
+impl<T: IoVec> device::base::char::CharDeviceSwitch for ParallelPort<T>
 where
     T::Value: From<u8> + TryInto<u8>,
 {
     /// Read a byte from the parallel port.
     fn get_char(&self) -> Result<u8, DeviceError> {
-        if self.line_status().contains(LineStatusFlags::INPUT_FULL) {
+        if self.line_status().contains(StatusFlags::INPUT_FULL) {
             return Ok((self.data.read() & 0xFF.into()).try_into().unwrap_or(0));
         }
 

@@ -1,4 +1,3 @@
-use core::alloc::Layout;
 use core::mem;
 
 use crate::machine::dtables::{self, DescriptorTablePointer};

@@ -46,7 +46,7 @@ pub struct Context {
     /// Effective group ID.
     pub effective_group_id: u32,
     /// Signal mask (what signals it can accept).
-    pub signal_mask: [u64, 2],
+    pub signal_mask: [u64; 2],
     /// Status of the context.
     pub status: Status,
     pub status_reason: &'static str,

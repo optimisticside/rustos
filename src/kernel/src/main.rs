@@ -4,13 +4,12 @@
 extern crate alloc;
 extern crate core;
 
-mod devices;
+mod device;
 mod filesys;
 mod io;
 mod ipc;
 mod machine;
 mod memory;
-mod socket;
 mod sync;
 mod unwind;
 mod utils;

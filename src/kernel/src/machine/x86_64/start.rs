@@ -1,5 +1,4 @@
-use crate::device::uart_16550::*;
-use crate::device::*;
+use crate::device::serial::uart_16550::SerialPort;
 use crate::io::PortIo;
 use crate::machine::{gdt, idt};
 

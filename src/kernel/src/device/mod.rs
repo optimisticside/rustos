@@ -1,11 +1,12 @@
-pub use self::block::*;
-pub use self::char::*;
 pub use self::device::*;
 pub use self::error::*;
 
-mod block;
-mod char;
+mod base;
+mod buffered;
 mod device;
 mod error;
+mod network;
+mod virtio;
 
-pub mod uart_16550;
+pub mod parallel;
+pub mod serial;

@@ -2,7 +2,7 @@
 use crate::io::PortIo;
 use crate::io::{IoVec, MemMappedIo, ReadOnly};
 
-use crate::device::{CharDeviceSwitch, DeviceError};
+use crate::device::{self, DeviceError};
 
 bitflags::bitflags! {
     struct LineStatusFlags: u8 {
@@ -79,7 +79,7 @@ where
     }
 }
 
-impl<T: IoVec> CharDeviceSwitch for SerialPort<T>
+impl<T: IoVec> device::base::char::CharDeviceSwitch for SerialPort<T>
 where
     T::Value: From<u8> + TryInto<u8>,
 {
