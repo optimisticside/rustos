@@ -7,6 +7,7 @@ extern crate core;
 mod devices;
 mod filesys;
 mod io;
+mod ipc;
 mod machine;
 mod memory;
 mod socket;

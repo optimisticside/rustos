@@ -1,4 +1,4 @@
-use crate::devices::BlockDeviceSwitch;
+use crate::device::BlockDeviceSwitch;
 use crate::sync::{RwLock, Yield};
 
 /// Each buffer represents the cached data of a physical block/sector on the disk.

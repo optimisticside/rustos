@@ -1,6 +1,8 @@
-use crate::device::{Device, BlockDevice, CharDevice};
-use crate::filesys::{self, AccessFlags, DirectoryEntry, FileDescriptor};
+use alloc::sync::Arc;
+
+use crate::device::{BlockDevice, CharDevice, Device};
 use crate::filesys::mount::MountPoint;
+use crate::filesys::{self, vfs::vnode::interface, AccessFlags, DirectoryEntry, FileDescriptor};
 use crate::ipc::socket::SocketAddress;
 use crate::time::TimeSpec;
 
@@ -8,9 +10,9 @@ use crate::time::TimeSpec;
 #[derive(Debug)]
 pub enum VnodeKind {
     /// Regular file.
-    DirectoryEntry(dyn FileInterface),
+    DirectoryEntry(dyn interface::FileInterface),
     /// Directory.
-    Directory(dyn DirectoryInterface),
+    Directory(dyn interface::DirectoryInterface),
     /// Symbolic link.
     SymbolicLink(Arc<Vnode>),
     /// Character device.
@@ -18,9 +20,9 @@ pub enum VnodeKind {
     /// Block device.
     BlockDevice(Arc<BlockDevice>),
     /// Socket.
-    Socket(dyn SocketInterface),
+    Socket(dyn interface::SocketInterface),
     /// Super-block of file system.
-    SuperBlock(dyn FileSystemInterface),
+    SuperBlock(dyn interface::FileSystemInterface),
 }
 
 /// Types of V-node data. This is data that is specific to the V-node's file-system.

@@ -1,5 +1,8 @@
-use crate::filesys::{AccessFlags, DirectoryEntry, FileDescriptor, FileSysError, Vnode};
-use crate::ipc::socket::SocketAddress;
+use alloc::sync::Arc;
+
+use crate::filesys::vfs::vnode::{Vnode, VnodeKind, VnodeStats};
+use crate::filesys::{AccessFlags, DirectoryEntry, FileDescriptor, FileSysError};
+use crate::ipc::socket::{Socket, SocketAddress};
 
 /// Callbacks that are shared among all V-nodes.
 pub trait VnodeInterface: Send + Sync {
@@ -30,7 +33,10 @@ pub trait FileInterface: VnodeInterface {
 pub trait DirectoryInterface: VnodeInterface {
     /// Allows caller to read entries of the directory, by providing the next entry in the
     /// directory (or the first if the user does not provide a directory-entry).
-    fn read_dir(vnode: &Vnode, dir_entry: Option<&DirectoryEntry>) -> Result<Option<Arc<DirEntry>>, FileSysError>;
+    fn read_dir(
+        vnode: &Vnode,
+        dir_entry: Option<&DirectoryEntry>,
+    ) -> Result<Option<Arc<DirectoryEntry>>, FileSysError>;
     /// Create a directory with the provided name.
     fn make_dir(vnode: &Vnode, name: &str) -> Result<Vnode, FileSysError>;
     /// Remove a directory given its name.
@@ -57,7 +63,8 @@ pub trait SocketInterface: FileInterface {
     /// socket is created.
     fn connect(vnode: &Vnode, addr: SocketAddress, length: usize) -> Result<(), FileSysError>;
     /// Accept a connection request from a client (made through [`SocketInterface::connect`]).
-    fn accept(vnode: &Vnode, addr: Option<&mut SocketAddress>) -> Result<Arc<Socket>, FileSysError>;
+    fn accept(vnode: &Vnode, addr: Option<&mut SocketAddress>)
+        -> Result<Arc<Socket>, FileSysError>;
 }
 
 /// Callbacks for file-system drivers.
