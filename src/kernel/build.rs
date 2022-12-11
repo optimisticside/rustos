@@ -4,7 +4,6 @@ use std::error::Error;
 use std::ffi::OsString;
 use std::fs::DirEntry;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 /// Call a function for every file that is a descendant of the given directory.
 fn visit_dirs(directory: &Path, callback: &mut dyn FnMut(&DirEntry)) -> std::io::Result<()> {
@@ -51,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             _ => (),
         }
-    });
+    })?;
 
     // Assemble any other files.
     visit_dirs(Path::new("src"), &mut |entry| {
@@ -79,7 +78,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             _ => (),
         }
-    });
+    })?;
 
     Ok(())
 }
