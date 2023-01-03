@@ -103,10 +103,6 @@ pub struct TeletypeControlChars {
     erase: u8,
     kill: u8,
     end_of_file: u8,
-    /// Time-out value (measured in 1/10ths of a second).
-    timeout: u8,
-    /// Minimum number of bytes that can be read at once.
-    min_bytes: u8,
     swtc: u8,
     start: u8,
     stop: u8,
@@ -133,6 +129,11 @@ pub struct TeletypeControl {
     line_dicipline: u8,
     /// Control characters.
     chars: TeletypeControlChars,
+    /// Time-out value (measured in 1/10ths of a second).
+    timeout: u8,
+    /// Minimum number of bytes that can be read at once.
+    min_bytes: u8,
+
 }
 
 /// Window/terminal size structure.
@@ -199,7 +200,7 @@ impl CharDeviceSwitch for Teletype {
 
             }
         } else {
-            
+
         }
     }
 }
